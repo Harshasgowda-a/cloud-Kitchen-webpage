@@ -52,57 +52,69 @@
         backdrop-filter: blur(8px);
         background-color: rgba(35, 20, 15, 0.7);
       }
-
-      /* Animated title hover effect */
-      .animated-title {
-        transition: all 0.5s ease;
-        display: inline-block;
-      }
-
-      .animated-title:hover {
-        transform: translateY(-5px) scale(1.02);
-        text-shadow: 0 10px 30px rgba(255, 68, 0, 0.6);
-        letter-spacing: 0.05em;
-      }
-
-      .animated-title-char {
+      
+      /* Smoke effect on hover */
+      .smoke-title {
+        position: relative;
         display: inline-block;
         transition: all 0.3s ease;
       }
-
-      .animated-title:hover .animated-title-char {
-        animation: wave 1s ease-in-out infinite;
+      
+      .smoke-title:hover {
+        transform: translateY(-3px);
       }
-
-      .animated-title:hover .animated-title-char:nth-child(1) {
-        animation-delay: 0s;
+      
+      .smoke-title::before,
+      .smoke-title::after {
+        content: '';
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        width: 80px;
+        height: 80px;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, transparent 70%);
+        border-radius: 50%;
+        opacity: 0;
+        transform: translate(-50%, 20px) scale(0.5);
+        pointer-events: none;
       }
-      .animated-title:hover .animated-title-char:nth-child(2) {
-        animation-delay: 0.1s;
+      
+      .smoke-title:hover::before {
+        animation: smoke1 3s ease-out infinite;
       }
-      .animated-title:hover .animated-title-char:nth-child(3) {
-        animation-delay: 0.2s;
+      
+      .smoke-title:hover::after {
+        animation: smoke2 3s ease-out infinite 0.5s;
       }
-      .animated-title:hover .animated-title-char:nth-child(4) {
-        animation-delay: 0.3s;
-      }
-      .animated-title:hover .animated-title-char:nth-child(5) {
-        animation-delay: 0.4s;
-      }
-      .animated-title:hover .animated-title-char:nth-child(6) {
-        animation-delay: 0.5s;
-      }
-
-      @keyframes wave {
-        0%,
+      
+      @keyframes smoke1 {
+        0% {
+          opacity: 0;
+          transform: translate(-50%, 20px) scale(0.5);
+        }
+        20% {
+          opacity: 0.6;
+        }
         100% {
-          transform: translateY(0px);
-        }
-        50% {
-          transform: translateY(-10px);
+          opacity: 0;
+          transform: translate(-40%, -60px) scale(1.5);
         }
       }
-
+      
+      @keyframes smoke2 {
+        0% {
+          opacity: 0;
+          transform: translate(-50%, 20px) scale(0.5);
+        }
+        20% {
+          opacity: 0.5;
+        }
+        100% {
+          opacity: 0;
+          transform: translate(-60%, -50px) scale(1.3);
+        }
+      }
+      
       .no-scrollbar::-webkit-scrollbar {
         display: none;
       }
@@ -110,13 +122,32 @@
         -ms-overflow-style: none;
         scrollbar-width: none;
       }
-
+      
+      /* Auto-scrolling animation */
+      @keyframes scroll-left {
+        0% {
+          transform: translateX(0);
+        }
+        100% {
+          transform: translateX(-50%);
+        }
+      }
+      
+      .scroll-container {
+        display: flex;
+        animation: scroll-left 40s linear infinite;
+      }
+      
+      .scroll-container:hover {
+        animation-play-state: paused;
+      }
+      
       /* Page flip animation */
       .page-container {
         transition: transform 0.6s ease;
         transform-style: preserve-3d;
       }
-
+      
       .menu-page {
         transition: opacity 0.3s ease;
       }
@@ -197,26 +228,9 @@
               >Exclusive Cloud Kitchens</span
             >
             <h2
-              class="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-black text-white leading-[0.9] tracking-tighter uppercase animated-title"
+              class="text-3xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-black text-white leading-[0.9] tracking-tighter uppercase smoke-title"
             >
-              <span class="animated-title-char">B</span
-              ><span class="animated-title-char">o</span
-              ><span class="animated-title-char">m</span
-              ><span class="animated-title-char">b</span
-              ><span class="animated-title-char">a</span
-              ><span class="animated-title-char">y</span>
-              <span class="animated-title-char">C</span
-              ><span class="animated-title-char">l</span
-              ><span class="animated-title-char">o</span
-              ><span class="animated-title-char">u</span
-              ><span class="animated-title-char">d</span>
-              <span class="animated-title-char">K</span
-              ><span class="animated-title-char">i</span
-              ><span class="animated-title-char">t</span
-              ><span class="animated-title-char">c</span
-              ><span class="animated-title-char">h</span
-              ><span class="animated-title-char">e</span
-              ><span class="animated-title-char">n</span>
+              Bombay Cloud Kitchen
             </h2>
             <p
               class="text-lg md:text-xl text-slate-200 font-light max-w-2xl mx-auto leading-relaxed"
@@ -312,7 +326,7 @@
           </div>
           <div class="flex items-start gap-4 border-l border-white/10 md:pl-8">
             <div class="bg-primary/20 p-3 rounded-lg">
-              <span class="material-symbols-outlined">bolt</span>
+              <span class="material-symbols-outlined text-primary">bolt</span>
             </div>
             <div>
               <h4
@@ -329,7 +343,7 @@
         </div>
       </footer>
     </div>
-    <!-- Additional Content Section -->
+    <!-- Additional Content Section - Auto-scrolling Gourmet Selection -->
     <section class="bg-background-dark pb-24 px-6 overflow-hidden">
       <div class="max-w-7xl mx-auto">
         <div class="mb-12 text-center">
@@ -343,97 +357,228 @@
             Gourmet Selection
           </h3>
         </div>
-        <div
-          class="flex overflow-x-auto gap-6 pb-8 snap-x snap-mandatory no-scrollbar scroll-smooth"
-        >
-          <!-- Image 1: Samosas -->
-          <div class="min-w-[300px] md:min-w-[400px] snap-start group">
-            <div
-              class="relative aspect-square rounded-2xl overflow-hidden border border-white/10"
-            >
-              <img
-                alt="Golden-brown Indian Samosas with mint chutney"
-                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                src="https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800&h=800&fit=crop"
-              />
-              <div
-                class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6"
-              >
-                <p
-                  class="text-white font-bold tracking-widest uppercase text-sm"
-                >
-                  Crispy Veggie Samosas
-                </p>
+        <div class="relative overflow-hidden">
+          <!-- Gradient overlays for seamless loop -->
+          <div class="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-background-dark to-transparent z-10 pointer-events-none"></div>
+          <div class="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-background-dark to-transparent z-10 pointer-events-none"></div>
+          
+          <div class="flex pb-8">
+            <div class="scroll-container flex gap-6">
+              <!-- First set of images -->
+              <div class="min-w-[150px] md:min-w-[200px] group flex-shrink-0">
+                <div class="relative aspect-square rounded-2xl overflow-hidden border border-white/10">
+                  <img
+                    alt="Golden-brown Indian Samosas with mint chutney"
+                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    src="https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800&h=800&fit=crop"
+                  />
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                    <p class="text-white font-bold tracking-widest uppercase text-sm">Crispy Veggie Samosas</p>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-          <!-- Image 2: Biryani -->
-          <div class="min-w-[300px] md:min-w-[400px] snap-start group">
-            <div
-              class="relative aspect-square rounded-2xl overflow-hidden border border-white/10"
-            >
-              <img
-                alt="Steaming aromatic Chicken Biryani in a traditional copper pot"
-                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                src="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=800&h=800&fit=crop"
-              />
-              <div
-                class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6"
-              >
-                <p
-                  class="text-white font-bold tracking-widest uppercase text-sm"
-                >
-                  Royal Mutton Biryani
-                </p>
+              
+              <div class="min-w-[150px] md:min-w-[200px] group flex-shrink-0">
+                <div class="relative aspect-square rounded-2xl overflow-hidden border border-white/10">
+                  <img
+                    alt="Steaming aromatic Chicken Biryani in a traditional copper pot"
+                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    src="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=800&h=800&fit=crop"
+                  />
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                    <p class="text-white font-bold tracking-widest uppercase text-sm">Royal Mutton Biryani</p>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-          <!-- Image 3: Kebabs -->
-          <div class="min-w-[300px] md:min-w-[400px] snap-start group">
-            <div
-              class="relative aspect-square rounded-2xl overflow-hidden border border-white/10"
-            >
-              <img
-                alt="Succulent Seekh Kebabs served on a black platter"
-                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                src="https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=800&h=800&fit=crop"
-              />
-              <div
-                class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6"
-              >
-                <p
-                  class="text-white font-bold tracking-widest uppercase text-sm"
-                >
-                  Assorted Gourmet Kebabs
-                </p>
+              
+              <div class="min-w-[150px] md:min-w-[200px] group flex-shrink-0">
+                <div class="relative aspect-square rounded-2xl overflow-hidden border border-white/10">
+                  <img
+                    alt="Succulent Seekh Kebabs served on a black platter"
+                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    src="https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=800&h=800&fit=crop"
+                  />
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                    <p class="text-white font-bold tracking-widest uppercase text-sm">Assorted Gourmet Kebabs</p>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-          <!-- Image 4: Sweets -->
-          <div class="min-w-[300px] md:min-w-[400px] snap-start group">
-            <div
-              class="relative aspect-square rounded-2xl overflow-hidden border border-white/10"
-            >
-              <img
-                alt="Variety of colorful Indian sweets including Gulab Jamun and Jalebi"
-                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                src="https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=800&h=800&fit=crop"
-              />
-              <div
-                class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6"
-              >
-                <p
-                  class="text-white font-bold tracking-widest uppercase text-sm"
-                >
-                  Deluxe Gulab Jamun
-                </p>
+              
+              <div class="min-w-[150px] md:min-w-[200px] group flex-shrink-0">
+                <div class="relative aspect-square rounded-2xl overflow-hidden border border-white/10">
+                  <img
+                    alt="Variety of colorful Indian sweets including Gulab Jamun and Jalebi"
+                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    src="https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=800&h=800&fit=crop"
+                  />
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                    <p class="text-white font-bold tracking-widest uppercase text-sm">Deluxe Gulab Jamun</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="min-w-[150px] md:min-w-[200px] group flex-shrink-0">
+                <div class="relative aspect-square rounded-2xl overflow-hidden border border-white/10">
+                  <img
+                    alt="Butter chicken in creamy tomato sauce"
+                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    src="https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=800&h=800&fit=crop"
+                  />
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                    <p class="text-white font-bold tracking-widest uppercase text-sm">Butter Chicken</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="min-w-[150px] md:min-w-[200px] group flex-shrink-0">
+                <div class="relative aspect-square rounded-2xl overflow-hidden border border-white/10">
+                  <img
+                    alt="Fresh naan bread"
+                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    src="https://images.unsplash.com/photo-1628840042765-356cda07504e?w=800&h=800&fit=crop"
+                  />
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                    <p class="text-white font-bold tracking-widest uppercase text-sm">Fresh Tandoori Naan</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="min-w-[150px] md:min-w-[200px] group flex-shrink-0">
+                <div class="relative aspect-square rounded-2xl overflow-hidden border border-white/10">
+                  <img
+                    alt="Paneer tikka masala"
+                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    src="https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=800&h=800&fit=crop"
+                  />
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                    <p class="text-white font-bold tracking-widest uppercase text-sm">Paneer Tikka Masala</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="min-w-[150px] md:min-w-[200px] group flex-shrink-0">
+                <div class="relative aspect-square rounded-2xl overflow-hidden border border-white/10">
+                  <img
+                    alt="Dal makhani"
+                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    src="https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=800&h=800&fit=crop"
+                  />
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                    <p class="text-white font-bold tracking-widest uppercase text-sm">Dal Makhani</p>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Duplicate set for seamless loop -->
+              <div class="min-w-[150px] md:min-w-[200px] group flex-shrink-0">
+                <div class="relative aspect-square rounded-2xl overflow-hidden border border-white/10">
+                  <img
+                    alt="Golden-brown Indian Samosas with mint chutney"
+                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    src="https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800&h=800&fit=crop"
+                  />
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                    <p class="text-white font-bold tracking-widest uppercase text-sm">Crispy Veggie Samosas</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="min-w-[150px] md:min-w-[200px] group flex-shrink-0">
+                <div class="relative aspect-square rounded-2xl overflow-hidden border border-white/10">
+                  <img
+                    alt="Steaming aromatic Chicken Biryani in a traditional copper pot"
+                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    src="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=800&h=800&fit=crop"
+                  />
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                    <p class="text-white font-bold tracking-widest uppercase text-sm">Royal Mutton Biryani</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="min-w-[150px] md:min-w-[200px] group flex-shrink-0">
+                <div class="relative aspect-square rounded-2xl overflow-hidden border border-white/10">
+                  <img
+                    alt="Succulent Seekh Kebabs served on a black platter"
+                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    src="https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=800&h=800&fit=crop"
+                  />
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                    <p class="text-white font-bold tracking-widest uppercase text-sm">Assorted Gourmet Kebabs</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="min-w-[150px] md:min-w-[200px] group flex-shrink-0">
+                <div class="relative aspect-square rounded-2xl overflow-hidden border border-white/10">
+                  <img
+                    alt="Variety of colorful Indian sweets including Gulab Jamun and Jalebi"
+                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    src="https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=800&h=800&fit=crop"
+                  />
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                    <p class="text-white font-bold tracking-widest uppercase text-sm">Deluxe Gulab Jamun</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="min-w-[150px] md:min-w-[200px] group flex-shrink-0">
+                <div class="relative aspect-square rounded-2xl overflow-hidden border border-white/10">
+                  <img
+                    alt="Butter chicken in creamy tomato sauce"
+                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    src="https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=800&h=800&fit=crop"
+                  />
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                    <p class="text-white font-bold tracking-widest uppercase text-sm">Butter Chicken</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="min-w-[150px] md:min-w-[200px] group flex-shrink-0">
+                <div class="relative aspect-square rounded-2xl overflow-hidden border border-white/10">
+                  <img
+                    alt="Fresh naan bread"
+                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    src="https://images.unsplash.com/photo-1628840042765-356cda07504e?w=800&h=800&fit=crop"
+                  />
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                    <p class="text-white font-bold tracking-widest uppercase text-sm">Fresh Tandoori Naan</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="min-w-[150px] md:min-w-[200px] group flex-shrink-0">
+                <div class="relative aspect-square rounded-2xl overflow-hidden border border-white/10">
+                  <img
+                    alt="Paneer tikka masala"
+                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    src="https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=800&h=800&fit=crop"
+                  />
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                    <p class="text-white font-bold tracking-widest uppercase text-sm">Paneer Tikka Masala</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="min-w-[150px] md:min-w-[200px] group flex-shrink-0">
+                <div class="relative aspect-square rounded-2xl overflow-hidden border border-white/10">
+                  <img
+                    alt="Dal makhani"
+                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    src="https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=800&h=800&fit=crop"
+                  />
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                    <p class="text-white font-bold tracking-widest uppercase text-sm">Dal Makhani</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </section>
-
+    
     <!-- Interactive Menu Section -->
     <section class="bg-background-dark pb-24 px-6 relative">
       <div class="max-w-7xl mx-auto">
@@ -448,46 +593,26 @@
             Our Interactive Menu
           </h3>
         </div>
-
+        
         <!-- Menu Category Tabs -->
         <div class="flex justify-center mb-8 flex-wrap gap-3">
-          <button
-            onclick="showMenuPage(1)"
-            id="tab-1"
-            class="menu-tab bg-primary text-white px-6 py-3 rounded-full font-bold text-xs tracking-widest uppercase hover:bg-orange-600 transition-all"
-          >
+          <button onclick="showMenuPage(1)" id="tab-1" class="menu-tab bg-primary text-white px-6 py-3 rounded-full font-bold text-xs tracking-widest uppercase hover:bg-orange-600 transition-all">
             Vegetarian
           </button>
-          <button
-            onclick="showMenuPage(2)"
-            id="tab-2"
-            class="menu-tab bg-white/10 text-slate-400 px-6 py-3 rounded-full font-bold text-xs tracking-widest uppercase hover:bg-white/20 transition-all"
-          >
+          <button onclick="showMenuPage(2)" id="tab-2" class="menu-tab bg-white/10 text-slate-400 px-6 py-3 rounded-full font-bold text-xs tracking-widest uppercase hover:bg-white/20 transition-all">
             Non-Vegetarian
           </button>
-          <button
-            onclick="showMenuPage(3)"
-            id="tab-3"
-            class="menu-tab bg-white/10 text-slate-400 px-6 py-3 rounded-full font-bold text-xs tracking-widest uppercase hover:bg-white/20 transition-all"
-          >
+          <button onclick="showMenuPage(3)" id="tab-3" class="menu-tab bg-white/10 text-slate-400 px-6 py-3 rounded-full font-bold text-xs tracking-widest uppercase hover:bg-white/20 transition-all">
             Chinese
           </button>
-          <button
-            onclick="showMenuPage(4)"
-            id="tab-4"
-            class="menu-tab bg-white/10 text-slate-400 px-6 py-3 rounded-full font-bold text-xs tracking-widest uppercase hover:bg-white/20 transition-all"
-          >
+          <button onclick="showMenuPage(4)" id="tab-4" class="menu-tab bg-white/10 text-slate-400 px-6 py-3 rounded-full font-bold text-xs tracking-widest uppercase hover:bg-white/20 transition-all">
             Desserts
           </button>
-          <button
-            onclick="showMenuPage(5)"
-            id="tab-5"
-            class="menu-tab bg-white/10 text-slate-400 px-6 py-3 rounded-full font-bold text-xs tracking-widest uppercase hover:bg-white/20 transition-all"
-          >
+          <button onclick="showMenuPage(5)" id="tab-5" class="menu-tab bg-white/10 text-slate-400 px-6 py-3 rounded-full font-bold text-xs tracking-widest uppercase hover:bg-white/20 transition-all">
             Beverages
           </button>
         </div>
-
+        
         <!-- Interactive Book Container -->
         <div class="relative max-w-5xl mx-auto flex flex-col items-center">
           <div class="w-full max-w-[300px] mb-12 relative group max-w-md">
@@ -501,896 +626,448 @@
               type="text"
             />
           </div>
-
+          
           <div
             class="relative flex flex-col md:flex-row w-full bg-[#1a0f0b] rounded-lg shadow-[0_35px_60px_-15px_rgba(0,0,0,0.9)] overflow-hidden border border-white/5 min-h-[600px] perspective-1000"
           >
+            
             <!-- Page 1: Vegetarian -->
             <div id="page-1" class="menu-page absolute inset-0 flex">
-              <div
-                class="flex-1 bg-[#fdfbf7] p-8 md:p-12 relative border-r border-black/10"
-              >
-                <div
-                  class="absolute inset-0 opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')]"
-                ></div>
+              <div class="flex-1 bg-[#fdfbf7] p-8 md:p-12 relative border-r border-black/10">
+                <div class="absolute inset-0 opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')]"></div>
                 <div class="relative z-10">
                   <div class="flex items-center gap-3 mb-8">
                     <span class="w-8 h-px bg-green-600"></span>
-                    <h4
-                      class="text-green-700 font-black text-2xl tracking-tighter uppercase italic"
-                    >
-                      Vegetarian Delights
-                    </h4>
+                    <h4 class="text-green-700 font-black text-2xl tracking-tighter uppercase italic">Vegetarian Delights</h4>
                   </div>
                   <div class="space-y-6">
                     <div class="group">
-                      <div
-                        class="flex justify-between items-baseline border-b border-green-600/10 pb-1"
-                      >
-                        <h5 class="text-slate-900 font-bold uppercase text-sm">
-                          Paneer Tikka Masala
-                        </h5>
-                        <span class="text-green-600 font-bold text-sm"
-                          >$12.99</span
-                        >
+                      <div class="flex justify-between items-baseline border-b border-green-600/10 pb-1">
+                        <h5 class="text-slate-900 font-bold uppercase text-sm">Paneer Tikka Masala</h5>
+                        <span class="text-green-600 font-bold text-sm">$12.99</span>
                       </div>
-                      <p class="text-slate-500 text-xs italic mt-1">
-                        Grilled cottage cheese in creamy tomato sauce.
-                      </p>
+                      <p class="text-slate-500 text-xs italic mt-1">Grilled cottage cheese in creamy tomato sauce.</p>
                     </div>
                     <div class="group">
-                      <div
-                        class="flex justify-between items-baseline border-b border-green-600/10 pb-1"
-                      >
-                        <h5 class="text-slate-900 font-bold uppercase text-sm">
-                          Dal Makhani
-                        </h5>
-                        <span class="text-green-600 font-bold text-sm"
-                          >$10.99</span
-                        >
+                      <div class="flex justify-between items-baseline border-b border-green-600/10 pb-1">
+                        <h5 class="text-slate-900 font-bold uppercase text-sm">Dal Makhani</h5>
+                        <span class="text-green-600 font-bold text-sm">$10.99</span>
                       </div>
-                      <p class="text-slate-500 text-xs italic mt-1">
-                        Black lentils slow-cooked with butter and cream.
-                      </p>
+                      <p class="text-slate-500 text-xs italic mt-1">Black lentils slow-cooked with butter and cream.</p>
                     </div>
                     <div class="group">
-                      <div
-                        class="flex justify-between items-baseline border-b border-green-600/10 pb-1"
-                      >
-                        <h5 class="text-slate-900 font-bold uppercase text-sm">
-                          Malai Kofta
-                        </h5>
-                        <span class="text-green-600 font-bold text-sm"
-                          >$13.50</span
-                        >
+                      <div class="flex justify-between items-baseline border-b border-green-600/10 pb-1">
+                        <h5 class="text-slate-900 font-bold uppercase text-sm">Malai Kofta</h5>
+                        <span class="text-green-600 font-bold text-sm">$13.50</span>
                       </div>
-                      <p class="text-slate-500 text-xs italic mt-1">
-                        Vegetable dumplings in rich cashew gravy.
-                      </p>
+                      <p class="text-slate-500 text-xs italic mt-1">Vegetable dumplings in rich cashew gravy.</p>
                     </div>
                     <div class="group">
-                      <div
-                        class="flex justify-between items-baseline border-b border-green-600/10 pb-1"
-                      >
-                        <h5 class="text-slate-900 font-bold uppercase text-sm">
-                          Palak Paneer
-                        </h5>
-                        <span class="text-green-600 font-bold text-sm"
-                          >$11.99</span
-                        >
+                      <div class="flex justify-between items-baseline border-b border-green-600/10 pb-1">
+                        <h5 class="text-slate-900 font-bold uppercase text-sm">Palak Paneer</h5>
+                        <span class="text-green-600 font-bold text-sm">$11.99</span>
                       </div>
-                      <p class="text-slate-500 text-xs italic mt-1">
-                        Cottage cheese in spinach and spice blend.
-                      </p>
+                      <p class="text-slate-500 text-xs italic mt-1">Cottage cheese in spinach and spice blend.</p>
                     </div>
                   </div>
-                  <div
-                    class="absolute bottom-8 left-12 text-[10px] text-slate-400 font-bold tracking-widest uppercase"
-                  >
-                    Page 01
-                  </div>
+                  <div class="absolute bottom-8 left-12 text-[10px] text-slate-400 font-bold tracking-widest uppercase">Page 01</div>
                 </div>
               </div>
-
-              <div
-                class="hidden md:block absolute left-1/2 top-0 bottom-0 w-12 -ml-6 bg-gradient-to-r from-black/20 via-black/40 to-black/20 z-20 pointer-events-none"
-              ></div>
-
+              
+              <div class="hidden md:block absolute left-1/2 top-0 bottom-0 w-12 -ml-6 bg-gradient-to-r from-black/20 via-black/40 to-black/20 z-20 pointer-events-none"></div>
+              
               <div class="flex-1 bg-[#fdfbf7] p-8 md:p-12 relative">
-                <div
-                  class="absolute inset-0 opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')]"
-                ></div>
+                <div class="absolute inset-0 opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')]"></div>
                 <div class="relative z-10">
-                  <div
-                    class="flex items-center gap-3 mb-8 justify-end text-right"
-                  >
-                    <h4
-                      class="text-green-700 font-black text-2xl tracking-tighter uppercase italic"
-                    >
-                      Veg Specialties
-                    </h4>
+                  <div class="flex items-center gap-3 mb-8 justify-end text-right">
+                    <h4 class="text-green-700 font-black text-2xl tracking-tighter uppercase italic">Veg Specialties</h4>
                     <span class="w-8 h-px bg-green-600"></span>
                   </div>
                   <div class="space-y-6">
                     <div class="group">
-                      <div
-                        class="flex justify-between items-baseline border-b border-green-600/10 pb-1"
-                      >
-                        <h5 class="text-slate-900 font-bold uppercase text-sm">
-                          Veg Biryani
-                        </h5>
-                        <span class="text-green-600 font-bold text-sm"
-                          >$11.99</span
-                        >
+                      <div class="flex justify-between items-baseline border-b border-green-600/10 pb-1">
+                        <h5 class="text-slate-900 font-bold uppercase text-sm">Veg Biryani</h5>
+                        <span class="text-green-600 font-bold text-sm">$11.99</span>
                       </div>
-                      <p class="text-slate-500 text-xs italic mt-1">
-                        Aromatic basmati rice with mixed vegetables.
-                      </p>
+                      <p class="text-slate-500 text-xs italic mt-1">Aromatic basmati rice with mixed vegetables.</p>
                     </div>
                     <div class="group">
-                      <div
-                        class="flex justify-between items-baseline border-b border-green-600/10 pb-1"
-                      >
-                        <h5 class="text-slate-900 font-bold uppercase text-sm">
-                          Aloo Gobi
-                        </h5>
-                        <span class="text-green-600 font-bold text-sm"
-                          >$9.99</span
-                        >
+                      <div class="flex justify-between items-baseline border-b border-green-600/10 pb-1">
+                        <h5 class="text-slate-900 font-bold uppercase text-sm">Aloo Gobi</h5>
+                        <span class="text-green-600 font-bold text-sm">$9.99</span>
                       </div>
-                      <p class="text-slate-500 text-xs italic mt-1">
-                        Potato and cauliflower with Indian spices.
-                      </p>
+                      <p class="text-slate-500 text-xs italic mt-1">Potato and cauliflower with Indian spices.</p>
                     </div>
                     <div class="group">
-                      <div
-                        class="flex justify-between items-baseline border-b border-green-600/10 pb-1"
-                      >
-                        <h5 class="text-slate-900 font-bold uppercase text-sm">
-                          Chole Bhature
-                        </h5>
-                        <span class="text-green-600 font-bold text-sm"
-                          >$10.50</span
-                        >
+                      <div class="flex justify-between items-baseline border-b border-green-600/10 pb-1">
+                        <h5 class="text-slate-900 font-bold uppercase text-sm">Chole Bhature</h5>
+                        <span class="text-green-600 font-bold text-sm">$10.50</span>
                       </div>
-                      <p class="text-slate-500 text-xs italic mt-1">
-                        Spicy chickpeas with fluffy fried bread.
-                      </p>
+                      <p class="text-slate-500 text-xs italic mt-1">Spicy chickpeas with fluffy fried bread.</p>
                     </div>
                     <div class="group">
-                      <div
-                        class="flex justify-between items-baseline border-b border-green-600/10 pb-1"
-                      >
-                        <h5 class="text-slate-900 font-bold uppercase text-sm">
-                          Veg Korma
-                        </h5>
-                        <span class="text-green-600 font-bold text-sm"
-                          >$12.50</span
-                        >
+                      <div class="flex justify-between items-baseline border-b border-green-600/10 pb-1">
+                        <h5 class="text-slate-900 font-bold uppercase text-sm">Veg Korma</h5>
+                        <span class="text-green-600 font-bold text-sm">$12.50</span>
                       </div>
-                      <p class="text-slate-500 text-xs italic mt-1">
-                        Mixed vegetables in mild coconut cashew curry.
-                      </p>
+                      <p class="text-slate-500 text-xs italic mt-1">Mixed vegetables in mild coconut cashew curry.</p>
                     </div>
                   </div>
-                  <div
-                    class="absolute bottom-8 right-12 text-[10px] text-slate-400 font-bold tracking-widest uppercase"
-                  >
-                    Page 02
-                  </div>
+                  <div class="absolute bottom-8 right-12 text-[10px] text-slate-400 font-bold tracking-widest uppercase">Page 02</div>
                 </div>
               </div>
             </div>
-
+            
             <!-- Page 2: Non-Vegetarian -->
             <div id="page-2" class="menu-page absolute inset-0 flex hidden">
-              <div
-                class="flex-1 bg-[#fdfbf7] p-8 md:p-12 relative border-r border-black/10"
-              >
-                <div
-                  class="absolute inset-0 opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')]"
-                ></div>
+              <div class="flex-1 bg-[#fdfbf7] p-8 md:p-12 relative border-r border-black/10">
+                <div class="absolute inset-0 opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')]"></div>
                 <div class="relative z-10">
                   <div class="flex items-center gap-3 mb-8">
                     <span class="w-8 h-px bg-red-600"></span>
-                    <h4
-                      class="text-red-700 font-black text-2xl tracking-tighter uppercase italic"
-                    >
-                      Non-Veg Specials
-                    </h4>
+                    <h4 class="text-red-700 font-black text-2xl tracking-tighter uppercase italic">Non-Veg Specials</h4>
                   </div>
                   <div class="space-y-6">
                     <div class="group">
-                      <div
-                        class="flex justify-between items-baseline border-b border-red-600/10 pb-1"
-                      >
-                        <h5 class="text-slate-900 font-bold uppercase text-sm">
-                          Butter Chicken
-                        </h5>
-                        <span class="text-red-600 font-bold text-sm"
-                          >$14.99</span
-                        >
+                      <div class="flex justify-between items-baseline border-b border-red-600/10 pb-1">
+                        <h5 class="text-slate-900 font-bold uppercase text-sm">Butter Chicken</h5>
+                        <span class="text-red-600 font-bold text-sm">$14.99</span>
                       </div>
-                      <p class="text-slate-500 text-xs italic mt-1">
-                        Tender chicken in rich tomato cream sauce.
-                      </p>
+                      <p class="text-slate-500 text-xs italic mt-1">Tender chicken in rich tomato cream sauce.</p>
                     </div>
                     <div class="group">
-                      <div
-                        class="flex justify-between items-baseline border-b border-red-600/10 pb-1"
-                      >
-                        <h5 class="text-slate-900 font-bold uppercase text-sm">
-                          Mutton Rogan Josh
-                        </h5>
-                        <span class="text-red-600 font-bold text-sm"
-                          >$16.99</span
-                        >
+                      <div class="flex justify-between items-baseline border-b border-red-600/10 pb-1">
+                        <h5 class="text-slate-900 font-bold uppercase text-sm">Mutton Rogan Josh</h5>
+                        <span class="text-red-600 font-bold text-sm">$16.99</span>
                       </div>
-                      <p class="text-slate-500 text-xs italic mt-1">
-                        Kashmiri mutton curry with aromatic spices.
-                      </p>
+                      <p class="text-slate-500 text-xs italic mt-1">Kashmiri mutton curry with aromatic spices.</p>
                     </div>
                     <div class="group">
-                      <div
-                        class="flex justify-between items-baseline border-b border-red-600/10 pb-1"
-                      >
-                        <h5 class="text-slate-900 font-bold uppercase text-sm">
-                          Chicken Tikka Masala
-                        </h5>
-                        <span class="text-red-600 font-bold text-sm"
-                          >$13.99</span
-                        >
+                      <div class="flex justify-between items-baseline border-b border-red-600/10 pb-1">
+                        <h5 class="text-slate-900 font-bold uppercase text-sm">Chicken Tikka Masala</h5>
+                        <span class="text-red-600 font-bold text-sm">$13.99</span>
                       </div>
-                      <p class="text-slate-500 text-xs italic mt-1">
-                        Tandoori chicken in spiced curry sauce.
-                      </p>
+                      <p class="text-slate-500 text-xs italic mt-1">Tandoori chicken in spiced curry sauce.</p>
                     </div>
                     <div class="group">
-                      <div
-                        class="flex justify-between items-baseline border-b border-red-600/10 pb-1"
-                      >
-                        <h5 class="text-slate-900 font-bold uppercase text-sm">
-                          Fish Curry
-                        </h5>
-                        <span class="text-red-600 font-bold text-sm"
-                          >$15.99</span
-                        >
+                      <div class="flex justify-between items-baseline border-b border-red-600/10 pb-1">
+                        <h5 class="text-slate-900 font-bold uppercase text-sm">Fish Curry</h5>
+                        <span class="text-red-600 font-bold text-sm">$15.99</span>
                       </div>
-                      <p class="text-slate-500 text-xs italic mt-1">
-                        Fresh fish in coastal coconut curry.
-                      </p>
+                      <p class="text-slate-500 text-xs italic mt-1">Fresh fish in coastal coconut curry.</p>
                     </div>
                   </div>
-                  <div
-                    class="absolute bottom-8 left-12 text-[10px] text-slate-400 font-bold tracking-widest uppercase"
-                  >
-                    Page 03
-                  </div>
+                  <div class="absolute bottom-8 left-12 text-[10px] text-slate-400 font-bold tracking-widest uppercase">Page 03</div>
                 </div>
               </div>
-
-              <div
-                class="hidden md:block absolute left-1/2 top-0 bottom-0 w-12 -ml-6 bg-gradient-to-r from-black/20 via-black/40 to-black/20 z-20 pointer-events-none"
-              ></div>
-
+              
+              <div class="hidden md:block absolute left-1/2 top-0 bottom-0 w-12 -ml-6 bg-gradient-to-r from-black/20 via-black/40 to-black/20 z-20 pointer-events-none"></div>
+              
               <div class="flex-1 bg-[#fdfbf7] p-8 md:p-12 relative">
-                <div
-                  class="absolute inset-0 opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')]"
-                ></div>
+                <div class="absolute inset-0 opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')]"></div>
                 <div class="relative z-10">
-                  <div
-                    class="flex items-center gap-3 mb-8 justify-end text-right"
-                  >
-                    <h4
-                      class="text-red-700 font-black text-2xl tracking-tighter uppercase italic"
-                    >
-                      Meat Mastery
-                    </h4>
+                  <div class="flex items-center gap-3 mb-8 justify-end text-right">
+                    <h4 class="text-red-700 font-black text-2xl tracking-tighter uppercase italic">Meat Mastery</h4>
                     <span class="w-8 h-px bg-red-600"></span>
                   </div>
                   <div class="space-y-6">
                     <div class="group">
-                      <div
-                        class="flex justify-between items-baseline border-b border-red-600/10 pb-1"
-                      >
-                        <h5 class="text-slate-900 font-bold uppercase text-sm">
-                          Chicken Biryani
-                        </h5>
-                        <span class="text-red-600 font-bold text-sm"
-                          >$13.99</span
-                        >
+                      <div class="flex justify-between items-baseline border-b border-red-600/10 pb-1">
+                        <h5 class="text-slate-900 font-bold uppercase text-sm">Chicken Biryani</h5>
+                        <span class="text-red-600 font-bold text-sm">$13.99</span>
                       </div>
-                      <p class="text-slate-500 text-xs italic mt-1">
-                        Aromatic rice layered with spiced chicken.
-                      </p>
+                      <p class="text-slate-500 text-xs italic mt-1">Aromatic rice layered with spiced chicken.</p>
                     </div>
                     <div class="group">
-                      <div
-                        class="flex justify-between items-baseline border-b border-red-600/10 pb-1"
-                      >
-                        <h5 class="text-slate-900 font-bold uppercase text-sm">
-                          Seekh Kebab
-                        </h5>
-                        <span class="text-red-600 font-bold text-sm"
-                          >$12.99</span
-                        >
+                      <div class="flex justify-between items-baseline border-b border-red-600/10 pb-1">
+                        <h5 class="text-slate-900 font-bold uppercase text-sm">Seekh Kebab</h5>
+                        <span class="text-red-600 font-bold text-sm">$12.99</span>
                       </div>
-                      <p class="text-slate-500 text-xs italic mt-1">
-                        Minced meat skewers with herbs and spices.
-                      </p>
+                      <p class="text-slate-500 text-xs italic mt-1">Minced meat skewers with herbs and spices.</p>
                     </div>
                     <div class="group">
-                      <div
-                        class="flex justify-between items-baseline border-b border-red-600/10 pb-1"
-                      >
-                        <h5 class="text-slate-900 font-bold uppercase text-sm">
-                          Tandoori Chicken
-                        </h5>
-                        <span class="text-red-600 font-bold text-sm"
-                          >$14.50</span
-                        >
+                      <div class="flex justify-between items-baseline border-b border-red-600/10 pb-1">
+                        <h5 class="text-slate-900 font-bold uppercase text-sm">Tandoori Chicken</h5>
+                        <span class="text-red-600 font-bold text-sm">$14.50</span>
                       </div>
-                      <p class="text-slate-500 text-xs italic mt-1">
-                        Clay oven roasted chicken with yogurt marinade.
-                      </p>
+                      <p class="text-slate-500 text-xs italic mt-1">Clay oven roasted chicken with yogurt marinade.</p>
                     </div>
                     <div class="group">
-                      <div
-                        class="flex justify-between items-baseline border-b border-red-600/10 pb-1"
-                      >
-                        <h5 class="text-slate-900 font-bold uppercase text-sm">
-                          Prawn Curry
-                        </h5>
-                        <span class="text-red-600 font-bold text-sm"
-                          >$17.99</span
-                        >
+                      <div class="flex justify-between items-baseline border-b border-red-600/10 pb-1">
+                        <h5 class="text-slate-900 font-bold uppercase text-sm">Prawn Curry</h5>
+                        <span class="text-red-600 font-bold text-sm">$17.99</span>
                       </div>
-                      <p class="text-slate-500 text-xs italic mt-1">
-                        Succulent prawns in spicy tomato gravy.
-                      </p>
+                      <p class="text-slate-500 text-xs italic mt-1">Succulent prawns in spicy tomato gravy.</p>
                     </div>
                   </div>
-                  <div
-                    class="absolute bottom-8 right-12 text-[10px] text-slate-400 font-bold tracking-widest uppercase"
-                  >
-                    Page 04
-                  </div>
+                  <div class="absolute bottom-8 right-12 text-[10px] text-slate-400 font-bold tracking-widest uppercase">Page 04</div>
                 </div>
               </div>
             </div>
-
+            
             <!-- Page 3: Chinese -->
             <div id="page-3" class="menu-page absolute inset-0 flex hidden">
-              <div
-                class="flex-1 bg-[#fdfbf7] p-8 md:p-12 relative border-r border-black/10"
-              >
-                <div
-                  class="absolute inset-0 opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')]"
-                ></div>
+              <div class="flex-1 bg-[#fdfbf7] p-8 md:p-12 relative border-r border-black/10">
+                <div class="absolute inset-0 opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')]"></div>
                 <div class="relative z-10">
                   <div class="flex items-center gap-3 mb-8">
                     <span class="w-8 h-px bg-amber-600"></span>
-                    <h4
-                      class="text-amber-700 font-black text-2xl tracking-tighter uppercase italic"
-                    >
-                      Chinese Fusion
-                    </h4>
+                    <h4 class="text-amber-700 font-black text-2xl tracking-tighter uppercase italic">Chinese Fusion</h4>
                   </div>
                   <div class="space-y-6">
                     <div class="group">
-                      <div
-                        class="flex justify-between items-baseline border-b border-amber-600/10 pb-1"
-                      >
-                        <h5 class="text-slate-900 font-bold uppercase text-sm">
-                          Hakka Noodles
-                        </h5>
-                        <span class="text-amber-600 font-bold text-sm"
-                          >$10.99</span
-                        >
+                      <div class="flex justify-between items-baseline border-b border-amber-600/10 pb-1">
+                        <h5 class="text-slate-900 font-bold uppercase text-sm">Hakka Noodles</h5>
+                        <span class="text-amber-600 font-bold text-sm">$10.99</span>
                       </div>
-                      <p class="text-slate-500 text-xs italic mt-1">
-                        Stir-fried noodles with vegetables and sauces.
-                      </p>
+                      <p class="text-slate-500 text-xs italic mt-1">Stir-fried noodles with vegetables and sauces.</p>
                     </div>
                     <div class="group">
-                      <div
-                        class="flex justify-between items-baseline border-b border-amber-600/10 pb-1"
-                      >
-                        <h5 class="text-slate-900 font-bold uppercase text-sm">
-                          Manchurian
-                        </h5>
-                        <span class="text-amber-600 font-bold text-sm"
-                          >$11.99</span
-                        >
+                      <div class="flex justify-between items-baseline border-b border-amber-600/10 pb-1">
+                        <h5 class="text-slate-900 font-bold uppercase text-sm">Manchurian</h5>
+                        <span class="text-amber-600 font-bold text-sm">$11.99</span>
                       </div>
-                      <p class="text-slate-500 text-xs italic mt-1">
-                        Crispy vegetable balls in tangy sauce.
-                      </p>
+                      <p class="text-slate-500 text-xs italic mt-1">Crispy vegetable balls in tangy sauce.</p>
                     </div>
                     <div class="group">
-                      <div
-                        class="flex justify-between items-baseline border-b border-amber-600/10 pb-1"
-                      >
-                        <h5 class="text-slate-900 font-bold uppercase text-sm">
-                          Chilli Chicken
-                        </h5>
-                        <span class="text-amber-600 font-bold text-sm"
-                          >$13.99</span
-                        >
+                      <div class="flex justify-between items-baseline border-b border-amber-600/10 pb-1">
+                        <h5 class="text-slate-900 font-bold uppercase text-sm">Chilli Chicken</h5>
+                        <span class="text-amber-600 font-bold text-sm">$13.99</span>
                       </div>
-                      <p class="text-slate-500 text-xs italic mt-1">
-                        Spicy Indo-Chinese chicken with peppers.
-                      </p>
+                      <p class="text-slate-500 text-xs italic mt-1">Spicy Indo-Chinese chicken with peppers.</p>
                     </div>
                     <div class="group">
-                      <div
-                        class="flex justify-between items-baseline border-b border-amber-600/10 pb-1"
-                      >
-                        <h5 class="text-slate-900 font-bold uppercase text-sm">
-                          Spring Rolls
-                        </h5>
-                        <span class="text-amber-600 font-bold text-sm"
-                          >$8.99</span
-                        >
+                      <div class="flex justify-between items-baseline border-b border-amber-600/10 pb-1">
+                        <h5 class="text-slate-900 font-bold uppercase text-sm">Spring Rolls</h5>
+                        <span class="text-amber-600 font-bold text-sm">$8.99</span>
                       </div>
-                      <p class="text-slate-500 text-xs italic mt-1">
-                        Crispy rolls filled with fresh vegetables.
-                      </p>
+                      <p class="text-slate-500 text-xs italic mt-1">Crispy rolls filled with fresh vegetables.</p>
                     </div>
                   </div>
-                  <div
-                    class="absolute bottom-8 left-12 text-[10px] text-slate-400 font-bold tracking-widest uppercase"
-                  >
-                    Page 05
-                  </div>
+                  <div class="absolute bottom-8 left-12 text-[10px] text-slate-400 font-bold tracking-widest uppercase">Page 05</div>
                 </div>
               </div>
-
-              <div
-                class="hidden md:block absolute left-1/2 top-0 bottom-0 w-12 -ml-6 bg-gradient-to-r from-black/20 via-black/40 to-black/20 z-20 pointer-events-none"
-              ></div>
-
+              
+              <div class="hidden md:block absolute left-1/2 top-0 bottom-0 w-12 -ml-6 bg-gradient-to-r from-black/20 via-black/40 to-black/20 z-20 pointer-events-none"></div>
+              
               <div class="flex-1 bg-[#fdfbf7] p-8 md:p-12 relative">
-                <div
-                  class="absolute inset-0 opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')]"
-                ></div>
+                <div class="absolute inset-0 opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')]"></div>
                 <div class="relative z-10">
-                  <div
-                    class="flex items-center gap-3 mb-8 justify-end text-right"
-                  >
-                    <h4
-                      class="text-amber-700 font-black text-2xl tracking-tighter uppercase italic"
-                    >
-                      Wok Specials
-                    </h4>
+                  <div class="flex items-center gap-3 mb-8 justify-end text-right">
+                    <h4 class="text-amber-700 font-black text-2xl tracking-tighter uppercase italic">Wok Specials</h4>
                     <span class="w-8 h-px bg-amber-600"></span>
                   </div>
                   <div class="space-y-6">
                     <div class="group">
-                      <div
-                        class="flex justify-between items-baseline border-b border-amber-600/10 pb-1"
-                      >
-                        <h5 class="text-slate-900 font-bold uppercase text-sm">
-                          Fried Rice
-                        </h5>
-                        <span class="text-amber-600 font-bold text-sm"
-                          >$9.99</span
-                        >
+                      <div class="flex justify-between items-baseline border-b border-amber-600/10 pb-1">
+                        <h5 class="text-slate-900 font-bold uppercase text-sm">Fried Rice</h5>
+                        <span class="text-amber-600 font-bold text-sm">$9.99</span>
                       </div>
-                      <p class="text-slate-500 text-xs italic mt-1">
-                        Savory rice with egg and vegetables.
-                      </p>
+                      <p class="text-slate-500 text-xs italic mt-1">Savory rice with egg and vegetables.</p>
                     </div>
                     <div class="group">
-                      <div
-                        class="flex justify-between items-baseline border-b border-amber-600/10 pb-1"
-                      >
-                        <h5 class="text-slate-900 font-bold uppercase text-sm">
-                          Schezwan Noodles
-                        </h5>
-                        <span class="text-amber-600 font-bold text-sm"
-                          >$11.99</span
-                        >
+                      <div class="flex justify-between items-baseline border-b border-amber-600/10 pb-1">
+                        <h5 class="text-slate-900 font-bold uppercase text-sm">Schezwan Noodles</h5>
+                        <span class="text-amber-600 font-bold text-sm">$11.99</span>
                       </div>
-                      <p class="text-slate-500 text-xs italic mt-1">
-                        Spicy noodles with Schezwan sauce.
-                      </p>
+                      <p class="text-slate-500 text-xs italic mt-1">Spicy noodles with Schezwan sauce.</p>
                     </div>
                     <div class="group">
-                      <div
-                        class="flex justify-between items-baseline border-b border-amber-600/10 pb-1"
-                      >
-                        <h5 class="text-slate-900 font-bold uppercase text-sm">
-                          Sweet & Sour
-                        </h5>
-                        <span class="text-amber-600 font-bold text-sm"
-                          >$12.99</span
-                        >
+                      <div class="flex justify-between items-baseline border-b border-amber-600/10 pb-1">
+                        <h5 class="text-slate-900 font-bold uppercase text-sm">Sweet & Sour</h5>
+                        <span class="text-amber-600 font-bold text-sm">$12.99</span>
                       </div>
-                      <p class="text-slate-500 text-xs italic mt-1">
-                        Crispy protein in tangy sweet sauce.
-                      </p>
+                      <p class="text-slate-500 text-xs italic mt-1">Crispy protein in tangy sweet sauce.</p>
                     </div>
                     <div class="group">
-                      <div
-                        class="flex justify-between items-baseline border-b border-amber-600/10 pb-1"
-                      >
-                        <h5 class="text-slate-900 font-bold uppercase text-sm">
-                          Hot & Sour Soup
-                        </h5>
-                        <span class="text-amber-600 font-bold text-sm"
-                          >$6.99</span
-                        >
+                      <div class="flex justify-between items-baseline border-b border-amber-600/10 pb-1">
+                        <h5 class="text-slate-900 font-bold uppercase text-sm">Hot & Sour Soup</h5>
+                        <span class="text-amber-600 font-bold text-sm">$6.99</span>
                       </div>
-                      <p class="text-slate-500 text-xs italic mt-1">
-                        Spicy and tangy vegetable soup.
-                      </p>
+                      <p class="text-slate-500 text-xs italic mt-1">Spicy and tangy vegetable soup.</p>
                     </div>
                   </div>
-                  <div
-                    class="absolute bottom-8 right-12 text-[10px] text-slate-400 font-bold tracking-widest uppercase"
-                  >
-                    Page 06
-                  </div>
+                  <div class="absolute bottom-8 right-12 text-[10px] text-slate-400 font-bold tracking-widest uppercase">Page 06</div>
                 </div>
               </div>
             </div>
-
+            
             <!-- Page 4: Desserts -->
             <div id="page-4" class="menu-page absolute inset-0 flex hidden">
-              <div
-                class="flex-1 bg-[#fdfbf7] p-8 md:p-12 relative border-r border-black/10"
-              >
-                <div
-                  class="absolute inset-0 opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')]"
-                ></div>
+              <div class="flex-1 bg-[#fdfbf7] p-8 md:p-12 relative border-r border-black/10">
+                <div class="absolute inset-0 opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')]"></div>
                 <div class="relative z-10">
                   <div class="flex items-center gap-3 mb-8">
                     <span class="w-8 h-px bg-primary"></span>
-                    <h4
-                      class="text-primary font-black text-2xl tracking-tighter uppercase italic"
-                    >
-                      Sweet Endings
-                    </h4>
+                    <h4 class="text-primary font-black text-2xl tracking-tighter uppercase italic">Sweet Endings</h4>
                   </div>
                   <div class="space-y-6">
                     <div class="group">
-                      <div
-                        class="flex justify-between items-baseline border-b border-primary/10 pb-1"
-                      >
-                        <h5 class="text-slate-900 font-bold uppercase text-sm">
-                          Deluxe Gulab Jamun
-                        </h5>
-                        <span class="text-primary font-bold text-sm"
-                          >$7.99</span
-                        >
+                      <div class="flex justify-between items-baseline border-b border-primary/10 pb-1">
+                        <h5 class="text-slate-900 font-bold uppercase text-sm">Deluxe Gulab Jamun</h5>
+                        <span class="text-primary font-bold text-sm">$7.99</span>
                       </div>
-                      <p class="text-slate-500 text-xs italic mt-1">
-                        Golden fried milk solid dumplings in saffron syrup.
-                      </p>
+                      <p class="text-slate-500 text-xs italic mt-1">Golden fried milk solid dumplings in saffron syrup.</p>
                     </div>
                     <div class="group">
-                      <div
-                        class="flex justify-between items-baseline border-b border-primary/10 pb-1"
-                      >
-                        <h5 class="text-slate-900 font-bold uppercase text-sm">
-                          Kesari Rasmalai
-                        </h5>
-                        <span class="text-primary font-bold text-sm"
-                          >$8.50</span
-                        >
+                      <div class="flex justify-between items-baseline border-b border-primary/10 pb-1">
+                        <h5 class="text-slate-900 font-bold uppercase text-sm">Kesari Rasmalai</h5>
+                        <span class="text-primary font-bold text-sm">$8.50</span>
                       </div>
-                      <p class="text-slate-500 text-xs italic mt-1">
-                        Soft cheese patties soaked in thickened saffron milk.
-                      </p>
+                      <p class="text-slate-500 text-xs italic mt-1">Soft cheese patties soaked in thickened saffron milk.</p>
                     </div>
                     <div class="group">
-                      <div
-                        class="flex justify-between items-baseline border-b border-primary/10 pb-1"
-                      >
-                        <h5 class="text-slate-900 font-bold uppercase text-sm">
-                          Shahi Tukda
-                        </h5>
-                        <span class="text-primary font-bold text-sm"
-                          >$9.99</span
-                        >
+                      <div class="flex justify-between items-baseline border-b border-primary/10 pb-1">
+                        <h5 class="text-slate-900 font-bold uppercase text-sm">Shahi Tukda</h5>
+                        <span class="text-primary font-bold text-sm">$9.99</span>
                       </div>
-                      <p class="text-slate-500 text-xs italic mt-1">
-                        Royal bread pudding with cardamom and dry fruits.
-                      </p>
+                      <p class="text-slate-500 text-xs italic mt-1">Royal bread pudding with cardamom and dry fruits.</p>
                     </div>
                     <div class="group">
-                      <div
-                        class="flex justify-between items-baseline border-b border-primary/10 pb-1"
-                      >
-                        <h5 class="text-slate-900 font-bold uppercase text-sm">
-                          Kheer
-                        </h5>
-                        <span class="text-primary font-bold text-sm"
-                          >$6.99</span
-                        >
+                      <div class="flex justify-between items-baseline border-b border-primary/10 pb-1">
+                        <h5 class="text-slate-900 font-bold uppercase text-sm">Kheer</h5>
+                        <span class="text-primary font-bold text-sm">$6.99</span>
                       </div>
-                      <p class="text-slate-500 text-xs italic mt-1">
-                        Creamy rice pudding with nuts and cardamom.
-                      </p>
+                      <p class="text-slate-500 text-xs italic mt-1">Creamy rice pudding with nuts and cardamom.</p>
                     </div>
                   </div>
-                  <div
-                    class="absolute bottom-8 left-12 text-[10px] text-slate-400 font-bold tracking-widest uppercase"
-                  >
-                    Page 07
-                  </div>
+                  <div class="absolute bottom-8 left-12 text-[10px] text-slate-400 font-bold tracking-widest uppercase">Page 07</div>
                 </div>
               </div>
-
-              <div
-                class="hidden md:block absolute left-1/2 top-0 bottom-0 w-12 -ml-6 bg-gradient-to-r from-black/20 via-black/40 to-black/20 z-20 pointer-events-none"
-              ></div>
-
+              
+              <div class="hidden md:block absolute left-1/2 top-0 bottom-0 w-12 -ml-6 bg-gradient-to-r from-black/20 via-black/40 to-black/20 z-20 pointer-events-none"></div>
+              
               <div class="flex-1 bg-[#fdfbf7] p-8 md:p-12 relative">
-                <div
-                  class="absolute inset-0 opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')]"
-                ></div>
+                <div class="absolute inset-0 opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')]"></div>
                 <div class="relative z-10">
-                  <div
-                    class="flex items-center gap-3 mb-8 justify-end text-right"
-                  >
-                    <h4
-                      class="text-primary font-black text-2xl tracking-tighter uppercase italic"
-                    >
-                      Sweet Treats
-                    </h4>
+                  <div class="flex items-center gap-3 mb-8 justify-end text-right">
+                    <h4 class="text-primary font-black text-2xl tracking-tighter uppercase italic">Sweet Treats</h4>
                     <span class="w-8 h-px bg-primary"></span>
                   </div>
                   <div class="space-y-6">
                     <div class="group">
-                      <div
-                        class="flex justify-between items-baseline border-b border-primary/10 pb-1"
-                      >
-                        <h5 class="text-slate-900 font-bold uppercase text-sm">
-                          Gajar Halwa
-                        </h5>
-                        <span class="text-primary font-bold text-sm"
-                          >$7.50</span
-                        >
+                      <div class="flex justify-between items-baseline border-b border-primary/10 pb-1">
+                        <h5 class="text-slate-900 font-bold uppercase text-sm">Gajar Halwa</h5>
+                        <span class="text-primary font-bold text-sm">$7.50</span>
                       </div>
-                      <p class="text-slate-500 text-xs italic mt-1">
-                        Carrot pudding with milk, sugar, and ghee.
-                      </p>
+                      <p class="text-slate-500 text-xs italic mt-1">Carrot pudding with milk, sugar, and ghee.</p>
                     </div>
                     <div class="group">
-                      <div
-                        class="flex justify-between items-baseline border-b border-primary/10 pb-1"
-                      >
-                        <h5 class="text-slate-900 font-bold uppercase text-sm">
-                          Kulfi Falooda
-                        </h5>
-                        <span class="text-primary font-bold text-sm"
-                          >$8.99</span
-                        >
+                      <div class="flex justify-between items-baseline border-b border-primary/10 pb-1">
+                        <h5 class="text-slate-900 font-bold uppercase text-sm">Kulfi Falooda</h5>
+                        <span class="text-primary font-bold text-sm">$8.99</span>
                       </div>
-                      <p class="text-slate-500 text-xs italic mt-1">
-                        Dense ice cream with vermicelli and rose syrup.
-                      </p>
+                      <p class="text-slate-500 text-xs italic mt-1">Dense ice cream with vermicelli and rose syrup.</p>
                     </div>
                     <div class="group">
-                      <div
-                        class="flex justify-between items-baseline border-b border-primary/10 pb-1"
-                      >
-                        <h5 class="text-slate-900 font-bold uppercase text-sm">
-                          Jalebi
-                        </h5>
-                        <span class="text-primary font-bold text-sm"
-                          >$6.50</span
-                        >
+                      <div class="flex justify-between items-baseline border-b border-primary/10 pb-1">
+                        <h5 class="text-slate-900 font-bold uppercase text-sm">Jalebi</h5>
+                        <span class="text-primary font-bold text-sm">$6.50</span>
                       </div>
-                      <p class="text-slate-500 text-xs italic mt-1">
-                        Crispy spiral sweets soaked in sugar syrup.
-                      </p>
+                      <p class="text-slate-500 text-xs italic mt-1">Crispy spiral sweets soaked in sugar syrup.</p>
                     </div>
                     <div class="group">
-                      <div
-                        class="flex justify-between items-baseline border-b border-primary/10 pb-1"
-                      >
-                        <h5 class="text-slate-900 font-bold uppercase text-sm">
-                          Rabri
-                        </h5>
-                        <span class="text-primary font-bold text-sm"
-                          >$7.99</span
-                        >
+                      <div class="flex justify-between items-baseline border-b border-primary/10 pb-1">
+                        <h5 class="text-slate-900 font-bold uppercase text-sm">Rabri</h5>
+                        <span class="text-primary font-bold text-sm">$7.99</span>
                       </div>
-                      <p class="text-slate-500 text-xs italic mt-1">
-                        Sweetened condensed milk with dry fruits.
-                      </p>
+                      <p class="text-slate-500 text-xs italic mt-1">Sweetened condensed milk with dry fruits.</p>
                     </div>
                   </div>
-                  <div
-                    class="absolute bottom-8 right-12 text-[10px] text-slate-400 font-bold tracking-widest uppercase"
-                  >
-                    Page 08
-                  </div>
+                  <div class="absolute bottom-8 right-12 text-[10px] text-slate-400 font-bold tracking-widest uppercase">Page 08</div>
                 </div>
               </div>
             </div>
-
+            
             <!-- Page 5: Beverages -->
             <div id="page-5" class="menu-page absolute inset-0 flex hidden">
-              <div
-                class="flex-1 bg-[#fdfbf7] p-8 md:p-12 relative border-r border-black/10"
-              >
-                <div
-                  class="absolute inset-0 opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')]"
-                ></div>
+              <div class="flex-1 bg-[#fdfbf7] p-8 md:p-12 relative border-r border-black/10">
+                <div class="absolute inset-0 opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')]"></div>
                 <div class="relative z-10">
                   <div class="flex items-center gap-3 mb-8">
                     <span class="w-8 h-px bg-blue-600"></span>
-                    <h4
-                      class="text-blue-900 font-black text-2xl tracking-tighter uppercase italic"
-                    >
-                      Refreshments
-                    </h4>
+                    <h4 class="text-blue-900 font-black text-2xl tracking-tighter uppercase italic">Refreshments</h4>
                   </div>
                   <div class="space-y-6">
                     <div class="group">
-                      <div
-                        class="flex justify-between items-baseline border-b border-blue-800/10 pb-1"
-                      >
-                        <h5 class="text-slate-900 font-bold uppercase text-sm">
-                          Mango Lassi
-                        </h5>
-                        <span class="text-blue-700 font-bold text-sm"
-                          >$5.50</span
-                        >
+                      <div class="flex justify-between items-baseline border-b border-blue-800/10 pb-1">
+                        <h5 class="text-slate-900 font-bold uppercase text-sm">Mango Lassi</h5>
+                        <span class="text-blue-700 font-bold text-sm">$5.50</span>
                       </div>
-                      <p class="text-slate-500 text-xs italic mt-1">
-                        Creamy yogurt drink blended with fresh Alphonso mangoes.
-                      </p>
+                      <p class="text-slate-500 text-xs italic mt-1">Creamy yogurt drink blended with fresh Alphonso mangoes.</p>
                     </div>
                     <div class="group">
-                      <div
-                        class="flex justify-between items-baseline border-b border-blue-800/10 pb-1"
-                      >
-                        <h5 class="text-slate-900 font-bold uppercase text-sm">
-                          Masala Chai
-                        </h5>
-                        <span class="text-blue-700 font-bold text-sm"
-                          >$4.00</span
-                        >
+                      <div class="flex justify-between items-baseline border-b border-blue-800/10 pb-1">
+                        <h5 class="text-slate-900 font-bold uppercase text-sm">Masala Chai</h5>
+                        <span class="text-blue-700 font-bold text-sm">$4.00</span>
                       </div>
-                      <p class="text-slate-500 text-xs italic mt-1">
-                        Spiced Indian tea brewed with milk and aromatic herbs.
-                      </p>
+                      <p class="text-slate-500 text-xs italic mt-1">Spiced Indian tea brewed with milk and aromatic herbs.</p>
                     </div>
                     <div class="group">
-                      <div
-                        class="flex justify-between items-baseline border-b border-blue-800/10 pb-1"
-                      >
-                        <h5 class="text-slate-900 font-bold uppercase text-sm">
-                          Fresh Lime Soda
-                        </h5>
-                        <span class="text-blue-700 font-bold text-sm"
-                          >$4.50</span
-                        >
+                      <div class="flex justify-between items-baseline border-b border-blue-800/10 pb-1">
+                        <h5 class="text-slate-900 font-bold uppercase text-sm">Fresh Lime Soda</h5>
+                        <span class="text-blue-700 font-bold text-sm">$4.50</span>
                       </div>
-                      <p class="text-slate-500 text-xs italic mt-1">
-                        Sparkling water with fresh lime juice, salt, or sugar.
-                      </p>
+                      <p class="text-slate-500 text-xs italic mt-1">Sparkling water with fresh lime juice, salt, or sugar.</p>
                     </div>
                     <div class="group">
-                      <div
-                        class="flex justify-between items-baseline border-b border-blue-800/10 pb-1"
-                      >
-                        <h5 class="text-slate-900 font-bold uppercase text-sm">
-                          Sweet Lassi
-                        </h5>
-                        <span class="text-blue-700 font-bold text-sm"
-                          >$4.99</span
-                        >
+                      <div class="flex justify-between items-baseline border-b border-blue-800/10 pb-1">
+                        <h5 class="text-slate-900 font-bold uppercase text-sm">Sweet Lassi</h5>
+                        <span class="text-blue-700 font-bold text-sm">$4.99</span>
                       </div>
-                      <p class="text-slate-500 text-xs italic mt-1">
-                        Traditional yogurt drink with sugar and cardamom.
-                      </p>
+                      <p class="text-slate-500 text-xs italic mt-1">Traditional yogurt drink with sugar and cardamom.</p>
                     </div>
                   </div>
-                  <div
-                    class="absolute bottom-8 left-12 text-[10px] text-slate-400 font-bold tracking-widest uppercase"
-                  >
-                    Page 09
-                  </div>
+                  <div class="absolute bottom-8 left-12 text-[10px] text-slate-400 font-bold tracking-widest uppercase">Page 09</div>
                 </div>
               </div>
-
-              <div
-                class="hidden md:block absolute left-1/2 top-0 bottom-0 w-12 -ml-6 bg-gradient-to-r from-black/20 via-black/40 to-black/20 z-20 pointer-events-none"
-              ></div>
-
+              
+              <div class="hidden md:block absolute left-1/2 top-0 bottom-0 w-12 -ml-6 bg-gradient-to-r from-black/20 via-black/40 to-black/20 z-20 pointer-events-none"></div>
+              
               <div class="flex-1 bg-[#fdfbf7] p-8 md:p-12 relative">
-                <div
-                  class="absolute inset-0 opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')]"
-                ></div>
+                <div class="absolute inset-0 opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')]"></div>
                 <div class="relative z-10">
-                  <div
-                    class="flex items-center gap-3 mb-8 justify-end text-right"
-                  >
-                    <h4
-                      class="text-blue-900 font-black text-2xl tracking-tighter uppercase italic"
-                    >
-                      Hot & Cold
-                    </h4>
+                  <div class="flex items-center gap-3 mb-8 justify-end text-right">
+                    <h4 class="text-blue-900 font-black text-2xl tracking-tighter uppercase italic">Hot & Cold</h4>
                     <span class="w-8 h-px bg-blue-600"></span>
                   </div>
                   <div class="space-y-6">
                     <div class="group">
-                      <div
-                        class="flex justify-between items-baseline border-b border-blue-800/10 pb-1"
-                      >
-                        <h5 class="text-slate-900 font-bold uppercase text-sm">
-                          Badam Milk
-                        </h5>
-                        <span class="text-blue-700 font-bold text-sm"
-                          >$5.99</span
-                        >
+                      <div class="flex justify-between items-baseline border-b border-blue-800/10 pb-1">
+                        <h5 class="text-slate-900 font-bold uppercase text-sm">Badam Milk</h5>
+                        <span class="text-blue-700 font-bold text-sm">$5.99</span>
                       </div>
-                      <p class="text-slate-500 text-xs italic mt-1">
-                        Warm milk infused with almonds and saffron.
-                      </p>
+                      <p class="text-slate-500 text-xs italic mt-1">Warm milk infused with almonds and saffron.</p>
                     </div>
                     <div class="group">
-                      <div
-                        class="flex justify-between items-baseline border-b border-blue-800/10 pb-1"
-                      >
-                        <h5 class="text-slate-900 font-bold uppercase text-sm">
-                          Thandai
-                        </h5>
-                        <span class="text-blue-700 font-bold text-sm"
-                          >$6.50</span
-                        >
+                      <div class="flex justify-between items-baseline border-b border-blue-800/10 pb-1">
+                        <h5 class="text-slate-900 font-bold uppercase text-sm">Thandai</h5>
+                        <span class="text-blue-700 font-bold text-sm">$6.50</span>
                       </div>
-                      <p class="text-slate-500 text-xs italic mt-1">
-                        Cold spiced milk drink with nuts and rose.
-                      </p>
+                      <p class="text-slate-500 text-xs italic mt-1">Cold spiced milk drink with nuts and rose.</p>
                     </div>
                     <div class="group">
-                      <div
-                        class="flex justify-between items-baseline border-b border-blue-800/10 pb-1"
-                      >
-                        <h5 class="text-slate-900 font-bold uppercase text-sm">
-                          Jaljeera
-                        </h5>
-                        <span class="text-blue-700 font-bold text-sm"
-                          >$4.50</span
-                        >
+                      <div class="flex justify-between items-baseline border-b border-blue-800/10 pb-1">
+                        <h5 class="text-slate-900 font-bold uppercase text-sm">Jaljeera</h5>
+                        <span class="text-blue-700 font-bold text-sm">$4.50</span>
                       </div>
-                      <p class="text-slate-500 text-xs italic mt-1">
-                        Tangy cumin-spiced summer cooler.
-                      </p>
+                      <p class="text-slate-500 text-xs italic mt-1">Tangy cumin-spiced summer cooler.</p>
                     </div>
                     <div class="group">
-                      <div
-                        class="flex justify-between items-baseline border-b border-blue-800/10 pb-1"
-                      >
-                        <h5 class="text-slate-900 font-bold uppercase text-sm">
-                          Filter Coffee
-                        </h5>
-                        <span class="text-blue-700 font-bold text-sm"
-                          >$4.00</span
-                        >
+                      <div class="flex justify-between items-baseline border-b border-blue-800/10 pb-1">
+                        <h5 class="text-slate-900 font-bold uppercase text-sm">Filter Coffee</h5>
+                        <span class="text-blue-700 font-bold text-sm">$4.00</span>
                       </div>
-                      <p class="text-slate-500 text-xs italic mt-1">
-                        South Indian style strong decoction coffee.
-                      </p>
+                      <p class="text-slate-500 text-xs italic mt-1">South Indian style strong decoction coffee.</p>
                     </div>
                   </div>
-                  <div
-                    class="absolute bottom-8 right-12 text-[10px] text-slate-400 font-bold tracking-widest uppercase"
-                  >
-                    Page 10
-                  </div>
+                  <div class="absolute bottom-8 right-12 text-[10px] text-slate-400 font-bold tracking-widest uppercase">Page 10</div>
                 </div>
               </div>
             </div>
+            
           </div>
-
+          
           <!-- Navigation Controls -->
           <div class="flex items-center gap-12 mt-12">
             <button
@@ -1408,11 +1085,7 @@
             <div
               class="h-1 w-24 bg-white/10 rounded-full relative overflow-hidden"
             >
-              <div
-                id="progress-bar"
-                class="absolute inset-0 bg-primary transition-all duration-300"
-                style="width: 20%"
-              ></div>
+              <div id="progress-bar" class="absolute inset-0 bg-primary transition-all duration-300" style="width: 20%;"></div>
             </div>
             <button
               onclick="nextPage()"
@@ -1430,7 +1103,7 @@
         </div>
       </div>
     </section>
-
+    
     <footer class="bg-black/90 py-12 px-6 border-t border-white/5">
       <div
         class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8"
@@ -1454,9 +1127,7 @@
             aria-label="Instagram"
           >
             <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-              <path
-                d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"
-              />
+              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
             </svg>
           </a>
           <!-- Facebook -->
@@ -1466,9 +1137,7 @@
             aria-label="Facebook"
           >
             <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-              <path
-                d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"
-              />
+              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
             </svg>
           </a>
           <!-- X (Twitter) -->
@@ -1478,56 +1147,46 @@
             aria-label="X"
           >
             <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-              <path
-                d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
-              />
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
             </svg>
           </a>
         </div>
       </div>
     </footer>
-
+    
     <script>
       let currentPage = 1;
       const totalPages = 5;
-
+      
       function showMenuPage(pageNum) {
         // Hide all pages
         for (let i = 1; i <= totalPages; i++) {
           document.getElementById('page-' + i).classList.add('hidden');
-          document
-            .getElementById('tab-' + i)
-            .classList.remove('bg-primary', 'text-white');
-          document
-            .getElementById('tab-' + i)
-            .classList.add('bg-white/10', 'text-slate-400');
+          document.getElementById('tab-' + i).classList.remove('bg-primary', 'text-white');
+          document.getElementById('tab-' + i).classList.add('bg-white/10', 'text-slate-400');
         }
-
+        
         // Show selected page
         document.getElementById('page-' + pageNum).classList.remove('hidden');
-        document
-          .getElementById('tab-' + pageNum)
-          .classList.remove('bg-white/10', 'text-slate-400');
-        document
-          .getElementById('tab-' + pageNum)
-          .classList.add('bg-primary', 'text-white');
-
+        document.getElementById('tab-' + pageNum).classList.remove('bg-white/10', 'text-slate-400');
+        document.getElementById('tab-' + pageNum).classList.add('bg-primary', 'text-white');
+        
         currentPage = pageNum;
         updateProgressBar();
       }
-
+      
       function nextPage() {
         if (currentPage < totalPages) {
           showMenuPage(currentPage + 1);
         }
       }
-
+      
       function previousPage() {
         if (currentPage > 1) {
           showMenuPage(currentPage - 1);
         }
       }
-
+      
       function updateProgressBar() {
         const progress = (currentPage / totalPages) * 100;
         document.getElementById('progress-bar').style.width = progress + '%';
