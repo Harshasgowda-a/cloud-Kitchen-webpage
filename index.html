@@ -49,6 +49,28 @@
         );
       }
       
+      /* Kitchen background behind title */
+      .kitchen-bg {
+        position: relative;
+      }
+      
+      .kitchen-bg::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 120%;
+        height: 120%;
+        background-image: url('https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=1200&h=800&fit=crop');
+        background-size: cover;
+        background-position: center;
+        opacity: 0.15;
+        z-index: -1;
+        filter: blur(2px);
+        border-radius: 20px;
+      }
+      
       /* Smooth scroll */
       html {
         scroll-behavior: smooth;
@@ -124,23 +146,18 @@
         scrollbar-width: none;
       }
       
-      /* Auto-scrolling animation */
-      @keyframes scroll-left {
-        0% {
-          transform: translateX(0);
-        }
-        100% {
-          transform: translateX(-50%);
-        }
+      /* Draggable scroll container */
+      .scroll-container-wrapper {
+        cursor: grab;
+        user-select: none;
       }
       
-      .scroll-container {
-        display: flex;
-        animation: scroll-left 50s linear infinite;
+      .scroll-container-wrapper:active {
+        cursor: grabbing;
       }
       
-      .scroll-container:hover {
-        animation-play-state: paused;
+      .scroll-container-wrapper.grabbing {
+        cursor: grabbing;
       }
       
       /* Menu book background with texture */
@@ -159,6 +176,12 @@
       
       .menu-page {
         transition: opacity 0.3s ease;
+      }
+      
+      /* Swipeable menu */
+      .menu-swipeable {
+        touch-action: pan-y;
+        user-select: none;
       }
       
       /* Blog card hover effect */
@@ -277,11 +300,13 @@
               class="inline-block text-primary font-bold tracking-[0.3em] uppercase text-xs sm:text-sm border-b-2 border-primary pb-1"
               >Exclusive Cloud Kitchens</span
             >
-            <h2
-              class="text-3xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-black text-white leading-[0.9] tracking-tighter uppercase smoke-title"
-            >
-              Bombay Cloud Kitchen
-            </h2>
+            <div class="kitchen-bg py-8 sm:py-12">
+              <h2
+                class="text-3xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-black text-white leading-[0.9] tracking-tighter uppercase smoke-title"
+              >
+                Bombay Cloud Kitchen
+              </h2>
+            </div>
             <p
               class="text-base sm:text-lg md:text-xl text-slate-200 font-light max-w-2xl mx-auto leading-relaxed px-4"
             >
@@ -322,14 +347,15 @@
               </label>
             </div>
             <div class="h-10 w-[1px] bg-white/20 hidden sm:block mx-2"></div>
-            <button
+            <a
+              href="#menu"
               class="bg-white text-black px-6 sm:px-8 py-3 sm:py-4 rounded font-black text-xs tracking-widest uppercase hover:bg-primary hover:text-white transition-all flex items-center gap-2"
             >
               Browse Menu
               <span class="material-symbols-outlined text-sm"
                 >arrow_forward</span
               >
-            </button>
+            </a>
           </div>
         </div>
       </main>
@@ -394,7 +420,7 @@
       </footer>
     </div>
     
-    <!-- Gourmet Selection - Smaller Images -->
+    <!-- Gourmet Selection - Draggable -->
     <section class="bg-background-dark pb-16 sm:pb-24 px-4 sm:px-6 overflow-hidden">
       <div class="max-w-7xl mx-auto">
         <div class="mb-8 sm:mb-12 text-center">
@@ -407,19 +433,20 @@
           >
             Gourmet Selection
           </h3>
+          <p class="text-slate-400 text-xs sm:text-sm mt-2">Drag to scroll →</p>
         </div>
-        <div class="relative overflow-hidden">
+        <div class="relative">
           <!-- Gradient overlays -->
           <div class="absolute left-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-r from-background-dark to-transparent z-10 pointer-events-none"></div>
           <div class="absolute right-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-l from-background-dark to-transparent z-10 pointer-events-none"></div>
           
-          <div class="flex pb-8">
-            <div class="scroll-container flex gap-4 sm:gap-6">
-              <!-- Smaller optimized images -->
+          <div id="gourmet-container" class="scroll-container-wrapper overflow-x-auto pb-8 no-scrollbar">
+            <div class="flex gap-4 sm:gap-6">
+              <!-- Food images -->
               <div class="min-w-[120px] sm:min-w-[150px] md:min-w-[180px] group flex-shrink-0">
                 <div class="relative aspect-square rounded-xl sm:rounded-2xl overflow-hidden border border-white/10">
                   <img
-                    alt="Golden-brown Indian Samosas with mint chutney"
+                    alt="Golden-brown Indian Samosas"
                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     src="https://images.unsplash.com/photo-1601050690597-df0568f70950?w=400&h=400&fit=crop"
                   />
@@ -432,7 +459,7 @@
               <div class="min-w-[120px] sm:min-w-[150px] md:min-w-[180px] group flex-shrink-0">
                 <div class="relative aspect-square rounded-xl sm:rounded-2xl overflow-hidden border border-white/10">
                   <img
-                    alt="Steaming aromatic Chicken Biryani"
+                    alt="Steaming aromatic Biryani"
                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     src="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=400&h=400&fit=crop"
                   />
@@ -445,7 +472,7 @@
               <div class="min-w-[120px] sm:min-w-[150px] md:min-w-[180px] group flex-shrink-0">
                 <div class="relative aspect-square rounded-xl sm:rounded-2xl overflow-hidden border border-white/10">
                   <img
-                    alt="Succulent Seekh Kebabs"
+                    alt="Succulent Kebabs"
                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     src="https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=400&h=400&fit=crop"
                   />
@@ -458,7 +485,7 @@
               <div class="min-w-[120px] sm:min-w-[150px] md:min-w-[180px] group flex-shrink-0">
                 <div class="relative aspect-square rounded-xl sm:rounded-2xl overflow-hidden border border-white/10">
                   <img
-                    alt="Indian sweets Gulab Jamun"
+                    alt="Indian sweets"
                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     src="https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=400&h=400&fit=crop"
                   />
@@ -520,16 +547,15 @@
                 </div>
               </div>
               
-              <!-- Duplicate for seamless loop -->
               <div class="min-w-[120px] sm:min-w-[150px] md:min-w-[180px] group flex-shrink-0">
                 <div class="relative aspect-square rounded-xl sm:rounded-2xl overflow-hidden border border-white/10">
                   <img
-                    alt="Golden-brown Indian Samosas"
+                    alt="Masala Dosa"
                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    src="https://images.unsplash.com/photo-1601050690597-df0568f70950?w=400&h=400&fit=crop"
+                    src="https://images.unsplash.com/photo-1694844422753-dd41188b0b8e?w=400&h=400&fit=crop"
                   />
                   <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3 sm:p-4">
-                    <p class="text-white font-bold tracking-widest uppercase text-[10px] sm:text-xs">Crispy Samosas</p>
+                    <p class="text-white font-bold tracking-widest uppercase text-[10px] sm:text-xs">Masala Dosa</p>
                   </div>
                 </div>
               </div>
@@ -537,38 +563,12 @@
               <div class="min-w-[120px] sm:min-w-[150px] md:min-w-[180px] group flex-shrink-0">
                 <div class="relative aspect-square rounded-xl sm:rounded-2xl overflow-hidden border border-white/10">
                   <img
-                    alt="Steaming Biryani"
+                    alt="Chicken Curry"
                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    src="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=400&h=400&fit=crop"
+                    src="https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=400&h=400&fit=crop"
                   />
                   <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3 sm:p-4">
-                    <p class="text-white font-bold tracking-widest uppercase text-[10px] sm:text-xs">Royal Biryani</p>
-                  </div>
-                </div>
-              </div>
-              
-              <div class="min-w-[120px] sm:min-w-[150px] md:min-w-[180px] group flex-shrink-0">
-                <div class="relative aspect-square rounded-xl sm:rounded-2xl overflow-hidden border border-white/10">
-                  <img
-                    alt="Seekh Kebabs"
-                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    src="https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=400&h=400&fit=crop"
-                  />
-                  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3 sm:p-4">
-                    <p class="text-white font-bold tracking-widest uppercase text-[10px] sm:text-xs">Gourmet Kebabs</p>
-                  </div>
-                </div>
-              </div>
-              
-              <div class="min-w-[120px] sm:min-w-[150px] md:min-w-[180px] group flex-shrink-0">
-                <div class="relative aspect-square rounded-xl sm:rounded-2xl overflow-hidden border border-white/10">
-                  <img
-                    alt="Sweet treats"
-                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    src="https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=400&h=400&fit=crop"
-                  />
-                  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3 sm:p-4">
-                    <p class="text-white font-bold tracking-widest uppercase text-[10px] sm:text-xs">Gulab Jamun</p>
+                    <p class="text-white font-bold tracking-widest uppercase text-[10px] sm:text-xs">Chicken Curry</p>
                   </div>
                 </div>
               </div>
@@ -578,7 +578,7 @@
       </div>
     </section>
     
-    <!-- Interactive Menu Section -->
+    <!-- Interactive Menu Section with Swipe -->
     <section id="menu" class="bg-background-dark pb-16 sm:pb-24 px-4 sm:px-6 relative">
       <div class="max-w-7xl mx-auto">
         <div class="mb-12 sm:mb-16 text-center">
@@ -591,6 +591,7 @@
           >
             Our Interactive Menu
           </h3>
+          <p class="text-slate-400 text-xs sm:text-sm mt-2">Swipe to turn pages →</p>
         </div>
         
         <!-- Menu Category Tabs -->
@@ -612,7 +613,7 @@
           </button>
         </div>
         
-        <!-- Interactive Book Container with Background -->
+        <!-- Interactive Book Container with Swipe -->
         <div class="relative max-w-5xl mx-auto flex flex-col items-center">
           <div class="w-full max-w-[300px] mb-8 sm:mb-12 relative group">
             <span
@@ -627,7 +628,8 @@
           </div>
           
           <div
-            class="relative flex flex-col md:flex-row w-full bg-[#1a0f0b] rounded-lg shadow-[0_35px_60px_-15px_rgba(0,0,0,0.9)] overflow-hidden border border-white/5 min-h-[500px] sm:min-h-[600px]"
+            id="menu-book"
+            class="menu-swipeable relative flex flex-col md:flex-row w-full bg-[#1a0f0b] rounded-lg shadow-[0_35px_60px_-15px_rgba(0,0,0,0.9)] overflow-hidden border border-white/5 min-h-[500px] sm:min-h-[600px]"
           >
             
             <!-- Page 1: Vegetarian -->
@@ -676,7 +678,7 @@
               
               <div class="flex-1 menu-book-bg p-6 sm:p-8 md:p-12 relative">
                 <div class="relative z-10">
-                  <div class="flex items-center gap-3 mb-6 sm:mb-8 justify-start md:justify-end md:text-right">
+                  <div class="flex items-center gap-3 mb-6 sm:mb-8 justify-start md:justify-end">
                     <h4 class="text-green-700 font-black text-xl sm:text-2xl tracking-tighter uppercase italic order-2 md:order-1">Veg Specials</h4>
                     <span class="w-6 sm:w-8 h-px bg-green-600 order-1 md:order-2"></span>
                   </div>
@@ -1109,11 +1111,11 @@
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          <!-- Blog 1 -->
+          <!-- Blog 1 - Fixed image -->
           <div class="blog-card bg-white/5 backdrop-blur-sm rounded-xl overflow-hidden border border-white/10 group">
             <div class="relative h-48 sm:h-56 overflow-hidden">
               <img 
-                src="https://images.unsplash.com/photo-1596797882870-8c33deeacda8?w=600&h=400&fit=crop" 
+                src="https://images.unsplash.com/photo-1596040033229-a0b3b85f0883?w=600&h=400&fit=crop" 
                 alt="Indian spices" 
                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
               />
@@ -1361,20 +1363,20 @@
       let currentPage = 1;
       const totalPages = 5;
       
+      // Mobile menu toggle
       function toggleMobileMenu() {
         const menu = document.getElementById('mobile-menu');
         menu.classList.toggle('hidden');
       }
       
+      // Menu page navigation
       function showMenuPage(pageNum) {
-        // Hide all pages
         for (let i = 1; i <= totalPages; i++) {
           document.getElementById('page-' + i).classList.add('hidden');
           document.getElementById('tab-' + i).classList.remove('bg-primary', 'text-white');
           document.getElementById('tab-' + i).classList.add('bg-white/10', 'text-slate-400');
         }
         
-        // Show selected page
         document.getElementById('page-' + pageNum).classList.remove('hidden');
         document.getElementById('tab-' + pageNum).classList.remove('bg-white/10', 'text-slate-400');
         document.getElementById('tab-' + pageNum).classList.add('bg-primary', 'text-white');
@@ -1398,6 +1400,74 @@
       function updateProgressBar() {
         const progress = (currentPage / totalPages) * 100;
         document.getElementById('progress-bar').style.width = progress + '%';
+      }
+      
+      // Draggable scroll for Gourmet Selection
+      const gourmetContainer = document.getElementById('gourmet-container');
+      let isDown = false;
+      let startX;
+      let scrollLeft;
+      
+      gourmetContainer.addEventListener('mousedown', (e) => {
+        isDown = true;
+        gourmetContainer.classList.add('grabbing');
+        startX = e.pageX - gourmetContainer.offsetLeft;
+        scrollLeft = gourmetContainer.scrollLeft;
+      });
+      
+      gourmetContainer.addEventListener('mouseleave', () => {
+        isDown = false;
+        gourmetContainer.classList.remove('grabbing');
+      });
+      
+      gourmetContainer.addEventListener('mouseup', () => {
+        isDown = false;
+        gourmetContainer.classList.remove('grabbing');
+      });
+      
+      gourmetContainer.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - gourmetContainer.offsetLeft;
+        const walk = (x - startX) * 2;
+        gourmetContainer.scrollLeft = scrollLeft - walk;
+      });
+      
+      // Touch events for mobile
+      gourmetContainer.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].pageX - gourmetContainer.offsetLeft;
+        scrollLeft = gourmetContainer.scrollLeft;
+      });
+      
+      gourmetContainer.addEventListener('touchmove', (e) => {
+        const x = e.touches[0].pageX - gourmetContainer.offsetLeft;
+        const walk = (x - startX) * 2;
+        gourmetContainer.scrollLeft = scrollLeft - walk;
+      });
+      
+      // Swipeable menu pages
+      const menuBook = document.getElementById('menu-book');
+      let touchStartX = 0;
+      let touchEndX = 0;
+      
+      menuBook.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+      });
+      
+      menuBook.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+      });
+      
+      function handleSwipe() {
+        if (touchEndX < touchStartX - 50) {
+          // Swipe left - next page
+          nextPage();
+        }
+        if (touchEndX > touchStartX + 50) {
+          // Swipe right - previous page
+          previousPage();
+        }
       }
     </script>
   </body>
