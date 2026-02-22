@@ -249,13 +249,14 @@
           </div>
           <div class="flex items-center gap-4">
             <button
-              class="bg-primary text-white px-4 sm:px-6 py-2.5 rounded font-bold text-xs sm:text-sm tracking-widest hover:bg-orange-600 transition-all uppercase"
-            >
-              Order Now
-            </button>
-            <button class="md:hidden text-white" onclick="toggleMobileMenu()">
-              <span class="material-symbols-outlined">menu</span>
-            </button>
+  onclick="openOrderModal()"
+  class="bg-primary text-white px-4 sm:px-6 py-2.5 rounded font-bold text-xs sm:text-sm tracking-widest hover:bg-orange-600 transition-all uppercase flex items-center gap-2 relative"
+>
+  <span class="material-symbols-outlined text-sm">shopping_cart</span>
+  Order Now
+  <span id="cart-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center hidden">0</span>
+</button>
+
           </div>
         </nav>
         
@@ -1369,14 +1370,195 @@
     <script>
       let currentPage = 1;
       const totalPages = 5;
+      let cart = [];
       
-      // Mobile menu toggle
+      // ==================== MOBILE MENU ====================
       function toggleMobileMenu() {
         const menu = document.getElementById('mobile-menu');
         menu.classList.toggle('hidden');
       }
       
-      // Menu page navigation
+      // ==================== ORDER MODAL ====================
+      function openOrderModal() {
+        document.getElementById('order-modal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      }
+      
+      function closeOrderModal() {
+        document.getElementById('order-modal').classList.add('hidden');
+        document.body.style.overflow = 'auto';
+      }
+      
+      // ==================== CATEGORY FILTER ====================
+      function filterCategory(category) {
+        const cards = document.querySelectorAll('.food-card');
+        const tabs = document.querySelectorAll('.category-tab');
+        
+        // Update active tab styling
+        tabs.forEach(tab => {
+          tab.classList.remove('active', 'bg-primary', 'text-white');
+          tab.classList.add('bg-white/10');
+        });
+        event.target.classList.add('active', 'bg-primary', 'text-white');
+        event.target.classList.remove('bg-white/10');
+        
+        // Show/hide food cards based on category
+        cards.forEach(card => {
+          if (category === 'all') {
+            card.style.display = 'block';
+          } else {
+            card.style.display = card.dataset.category === category ? 'block' : 'none';
+          }
+        });
+      }
+      
+      // ==================== CART FUNCTIONS ====================
+      function addToCart(name, price, image) {
+        const existingItem = cart.find(item => item.name === name);
+        
+        if (existingItem) {
+          existingItem.quantity++;
+        } else {
+          cart.push({ name, price, image, quantity: 1 });
+        }
+        
+        updateCartCount();
+        showNotification(`${name} added to cart!`);
+      }
+      
+      function updateCartCount() {
+        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        const countElement = document.getElementById('cart-count');
+        const badgeElement = document.getElementById('cart-badge');
+        
+        if (countElement) countElement.textContent = totalItems;
+        if (badgeElement) badgeElement.textContent = totalItems;
+      }
+      
+      function viewCart() {
+        if (cart.length === 0) {
+          showNotification('Your cart is empty!');
+          return;
+        }
+        
+        let cartHTML = '<div class="fixed inset-0 bg-black/95 z-[120] overflow-y-auto p-4 flex items-center justify-center">';
+        cartHTML += '<div class="max-w-4xl w-full bg-white dark:bg-slate-900 rounded-2xl p-6 my-8">';
+        cartHTML += '<div class="flex items-center justify-between mb-6 border-b border-slate-200 dark:border-slate-700 pb-4">';
+        cartHTML += '<h2 class="text-2xl font-black text-slate-900 dark:text-white">Your Cart</h2>';
+        cartHTML += '<button onclick="closeCartModal()" class="material-symbols-outlined text-slate-500 hover:text-primary text-3xl">close</button>';
+        cartHTML += '</div>';
+        
+        let total = 0;
+        cart.forEach(item => {
+          total += item.price * item.quantity;
+          cartHTML += `
+            <div class="flex items-center gap-4 mb-4 p-4 bg-slate-100 dark:bg-slate-800 rounded-lg">
+              <img src="${item.image}" class="w-20 h-20 object-cover rounded-lg"/>
+              <div class="flex-1">
+                <h3 class="font-bold text-slate-900 dark:text-white">${item.name}</h3>
+                <p class="text-primary font-bold text-lg">₹${item.price}</p>
+              </div>
+              <div class="flex items-center gap-3">
+                <button onclick="updateQuantity('${item.name}', -1)" class="bg-primary text-white w-10 h-10 rounded-full font-bold hover:bg-orange-600 transition-all">-</button>
+                <span class="font-bold text-xl text-slate-900 dark:text-white w-8 text-center">${item.quantity}</span>
+                <button onclick="updateQuantity('${item.name}', 1)" class="bg-primary text-white w-10 h-10 rounded-full font-bold hover:bg-orange-600 transition-all">+</button>
+              </div>
+              <button onclick="removeFromCart('${item.name}')" class="material-symbols-outlined text-red-500 hover:text-red-700 ml-2">delete</button>
+            </div>
+          `;
+        });
+        
+        cartHTML += `
+          <div class="border-t border-slate-200 dark:border-slate-700 pt-6 mt-6">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-slate-600 dark:text-slate-400">Subtotal</span>
+              <span class="font-bold text-slate-900 dark:text-white">₹${total}</span>
+            </div>
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-slate-600 dark:text-slate-400">GST (5%)</span>
+              <span class="font-bold text-slate-900 dark:text-white">₹${(total * 0.05).toFixed(2)}</span>
+            </div>
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-slate-600 dark:text-slate-400">Delivery</span>
+              <span class="font-bold text-green-500">FREE</span>
+            </div>
+            <div class="border-t border-slate-200 dark:border-slate-700 pt-4 mt-4 flex justify-between items-center">
+              <span class="text-2xl font-black text-slate-900 dark:text-white">Total</span>
+              <span class="text-3xl font-black text-primary">₹${(total * 1.05).toFixed(2)}</span>
+            </div>
+          </div>
+        `;
+        
+        cartHTML += '<div class="flex gap-4 mt-6">';
+        cartHTML += '<button onclick="closeCartModal()" class="flex-1 bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white py-4 rounded-lg font-black text-lg hover:bg-slate-300 dark:hover:bg-slate-600 transition-all">Continue Shopping</button>';
+        cartHTML += '<button onclick="proceedToCheckout()" class="flex-1 bg-primary text-white py-4 rounded-lg font-black text-lg hover:bg-orange-600 transition-all">Checkout</button>';
+        cartHTML += '</div>';
+        
+        cartHTML += '</div></div>';
+        
+        const existingModal = document.getElementById('cart-modal');
+        if (existingModal) existingModal.remove();
+        
+        document.body.insertAdjacentHTML('beforeend', '<div id="cart-modal">' + cartHTML + '</div>');
+      }
+      
+      function closeCartModal() {
+        const modal = document.getElementById('cart-modal');
+        if (modal) modal.remove();
+      }
+      
+      function updateQuantity(name, change) {
+        const item = cart.find(i => i.name === name);
+        if (item) {
+          item.quantity += change;
+          if (item.quantity <= 0) {
+            cart = cart.filter(i => i.name !== name);
+          }
+          updateCartCount();
+          closeCartModal();
+          if (cart.length > 0) {
+            viewCart();
+          }
+        }
+      }
+      
+      function removeFromCart(name) {
+        cart = cart.filter(i => i.name !== name);
+        updateCartCount();
+        closeCartModal();
+        if (cart.length > 0) {
+          viewCart();
+        } else {
+          showNotification('Cart is now empty');
+        }
+      }
+      
+      function proceedToCheckout() {
+        closeCartModal();
+        closeOrderModal();
+        showNotification('Redirecting to checkout...');
+        // You can redirect to checkout page here
+        // window.location.href = 'checkout.html';
+        
+        // For demo, show success message
+        setTimeout(() => {
+          alert('Checkout feature coming soon! Total: ₹' + (cart.reduce((sum, item) => sum + (item.price * item.quantity), 0) * 1.05).toFixed(2));
+        }, 1000);
+      }
+      
+      function showNotification(message) {
+        const notif = document.createElement('div');
+        notif.className = 'fixed top-24 right-6 bg-primary text-white px-6 py-3 rounded-lg shadow-2xl z-[150] font-bold animate-bounce';
+        notif.textContent = message;
+        document.body.appendChild(notif);
+        setTimeout(() => {
+          notif.style.opacity = '0';
+          notif.style.transition = 'opacity 0.3s';
+          setTimeout(() => notif.remove(), 300);
+        }, 2000);
+      }
+      
+      // ==================== MENU PAGE NAVIGATION ====================
       function showMenuPage(pageNum) {
         for (let i = 1; i <= totalPages; i++) {
           document.getElementById('page-' + i).classList.add('hidden');
@@ -1409,7 +1591,7 @@
         document.getElementById('progress-bar').style.width = progress + '%';
       }
       
-      // Draggable scroll for Gourmet Selection
+      // ==================== DRAGGABLE GOURMET SELECTION ====================
       const gourmetContainer = document.getElementById('gourmet-container');
       let isDown = false;
       let startX;
@@ -1440,7 +1622,6 @@
         gourmetContainer.scrollLeft = scrollLeft - walk;
       });
       
-      // Touch events for mobile
       gourmetContainer.addEventListener('touchstart', (e) => {
         startX = e.touches[0].pageX - gourmetContainer.offsetLeft;
         scrollLeft = gourmetContainer.scrollLeft;
@@ -1452,7 +1633,7 @@
         gourmetContainer.scrollLeft = scrollLeft - walk;
       });
       
-      // Swipeable menu pages
+      // ==================== SWIPEABLE MENU PAGES ====================
       const menuBook = document.getElementById('menu-book');
       let touchStartX = 0;
       let touchEndX = 0;
@@ -1468,30 +1649,50 @@
       
       function handleSwipe() {
         if (touchEndX < touchStartX - 50) {
-          // Swipe left - next page
           nextPage();
         }
         if (touchEndX > touchStartX + 50) {
-          // Swipe right - previous page
           previousPage();
         }
       }
+      
+      // ==================== BLOG MODALS ====================
       function showBlogModal(blogId) {
-  const el = document.getElementById(blogId);
-  if (!el) return;
-  el.classList.remove('hidden');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeBlogModal(blogId) {
-  const el = document.getElementById(blogId);
-  if (!el) return;
-  el.classList.add('hidden');
-  document.body.style.overflow = 'auto';
-}
-
-
+        const el = document.getElementById(blogId);
+        if (!el) return;
+        el.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      }
+    
+      function closeBlogModal(blogId) {
+        const el = document.getElementById(blogId);
+        if (!el) return;
+        el.classList.add('hidden');
+        document.body.style.overflow = 'auto';
+      }
+      
     </script>
+    ```
+    
+    ---
+    
+    ## 🎯 Visual Guide to Finding the Script Section
+    
+    Look for this pattern at the **very bottom** of your HTML file (before `</body>`):
+    ```
+    ... (blog modal content)
+        </div>
+        
+        <script>    ← START HERE
+          let currentPage = 1;
+          const totalPages = 5;
+          
+          ... (OLD CODE TO DELETE)
+          
+        </script>    ← END HERE
+        
+      </body>
+    </html>
     <div id="blog1-content" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
       <div class="max-w-4xl w-full max-h-[90vh] overflow-y-auto bg-white/95 dark:bg-black/95 rounded-3xl shadow-2xl p-8 sm:p-12">
         <div class="flex items-center justify-between mb-8 pb-6 border-b border-gray-200 dark:border-white/20">
@@ -1825,7 +2026,158 @@ function closeBlogModal(blogId) {
     </div>
   </div>
 </div>
+<!-- ORDER NOW MODAL - Add this before </body> -->
+<div id="order-modal" class="fixed inset-0 bg-black/95 backdrop-blur-md z-[100] hidden overflow-y-auto">
+  <div class="min-h-screen px-4 py-8">
+    <div class="max-w-7xl mx-auto">
+      <!-- Header -->
+      <div class="flex items-center justify-between mb-8 sticky top-0 bg-black/80 backdrop-blur-md py-4 z-10">
+        <div class="flex items-center gap-3">
+          <span class="material-symbols-outlined text-primary text-3xl">restaurant</span>
+          <h2 class="text-2xl sm:text-3xl font-black text-white">Order <span class="text-primary">Now</span></h2>
+        </div>
+        <button onclick="closeOrderModal()" class="p-2 hover:bg-white/10 rounded-lg transition-colors">
+          <span class="material-symbols-outlined text-white text-3xl">close</span>
+        </button>
+      </div>
 
+      <!-- Category Tabs -->
+      <div class="flex gap-4 mb-8 overflow-x-auto pb-2 hide-scrollbar">
+        <button onclick="filterCategory('all')" class="category-tab active px-6 py-3 rounded-full bg-primary text-white font-bold whitespace-nowrap">All Items</button>
+        <button onclick="filterCategory('vegetarian')" class="category-tab px-6 py-3 rounded-full bg-white/10 text-white font-bold whitespace-nowrap hover:bg-white/20">Vegetarian</button>
+        <button onclick="filterCategory('non-veg')" class="category-tab px-6 py-3 rounded-full bg-white/10 text-white font-bold whitespace-nowrap hover:bg-white/20">Non-Veg</button>
+        <button onclick="filterCategory('chinese')" class="category-tab px-6 py-3 rounded-full bg-white/10 text-white font-bold whitespace-nowrap hover:bg-white/20">Chinese</button>
+        <button onclick="filterCategory('desserts')" class="category-tab px-6 py-3 rounded-full bg-white/10 text-white font-bold whitespace-nowrap hover:bg-white/20">Desserts</button>
+      </div>
+
+      <!-- Food Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-24">
+        
+        <!-- VEGETARIAN ITEMS -->
+        <div class="food-card bg-white/10 backdrop-blur-md rounded-xl overflow-hidden border border-white/20 hover:border-primary transition-all" data-category="vegetarian">
+          <div class="relative h-48 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=400&h=400&fit=crop" alt="Paneer Tikka Masala" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500"/>
+            <span class="absolute top-3 left-3 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">VEG</span>
+          </div>
+          <div class="p-4">
+            <h3 class="font-bold text-lg text-white mb-2">Paneer Tikka Masala</h3>
+            <p class="text-slate-400 text-sm mb-4">Grilled cottage cheese in creamy tomato sauce</p>
+            <div class="flex items-center justify-between">
+              <span class="text-2xl font-black text-primary">₹1,099</span>
+              <button onclick="addToCart('Paneer Tikka Masala', 1099, 'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=400&h=400&fit=crop')" class="bg-primary text-white px-4 py-2 rounded-lg font-bold hover:bg-orange-600 transition-all flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm">add_shopping_cart</span>
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="food-card bg-white/10 backdrop-blur-md rounded-xl overflow-hidden border border-white/20 hover:border-primary transition-all" data-category="vegetarian">
+          <div class="relative h-48 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=400&h=400&fit=crop" alt="Dal Makhani" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500"/>
+            <span class="absolute top-3 left-3 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">VEG</span>
+          </div>
+          <div class="p-4">
+            <h3 class="font-bold text-lg text-white mb-2">Dal Makhani</h3>
+            <p class="text-slate-400 text-sm mb-4">Black lentils slow-cooked with butter</p>
+            <div class="flex items-center justify-between">
+              <span class="text-2xl font-black text-primary">₹929</span>
+              <button onclick="addToCart('Dal Makhani', 929, 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=400&h=400&fit=crop')" class="bg-primary text-white px-4 py-2 rounded-lg font-bold hover:bg-orange-600 transition-all flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm">add_shopping_cart</span>
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- NON-VEG ITEMS -->
+        <div class="food-card bg-white/10 backdrop-blur-md rounded-xl overflow-hidden border border-white/20 hover:border-primary transition-all" data-category="non-veg">
+          <div class="relative h-48 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=400&h=400&fit=crop" alt="Butter Chicken" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500"/>
+            <span class="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">NON-VEG</span>
+          </div>
+          <div class="p-4">
+            <h3 class="font-bold text-lg text-white mb-2">Butter Chicken</h3>
+            <p class="text-slate-400 text-sm mb-4">Tender chicken in tomato cream sauce</p>
+            <div class="flex items-center justify-between">
+              <span class="text-2xl font-black text-primary">₹1,269</span>
+              <button onclick="addToCart('Butter Chicken', 1269, 'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=400&h=400&fit=crop')" class="bg-primary text-white px-4 py-2 rounded-lg font-bold hover:bg-orange-600 transition-all flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm">add_shopping_cart</span>
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="food-card bg-white/10 backdrop-blur-md rounded-xl overflow-hidden border border-white/20 hover:border-primary transition-all" data-category="non-veg">
+          <div class="relative h-48 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=400&h=400&fit=crop" alt="Chicken Biryani" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500"/>
+            <span class="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">NON-VEG</span>
+          </div>
+          <div class="p-4">
+            <h3 class="font-bold text-lg text-white mb-2">Chicken Biryani</h3>
+            <p class="text-slate-400 text-sm mb-4">Aromatic rice with spiced chicken</p>
+            <div class="flex items-center justify-between">
+              <span class="text-2xl font-black text-primary">₹1,179</span>
+              <button onclick="addToCart('Chicken Biryani', 1179, 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=400&h=400&fit=crop')" class="bg-primary text-white px-4 py-2 rounded-lg font-bold hover:bg-orange-600 transition-all flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm">add_shopping_cart</span>
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CHINESE ITEMS -->
+        <div class="food-card bg-white/10 backdrop-blur-md rounded-xl overflow-hidden border border-white/20 hover:border-primary transition-all" data-category="chinese">
+          <div class="relative h-48 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1626074353765-517a681e40be?w=400&h=400&fit=crop" alt="Hakka Noodles" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500"/>
+            <span class="absolute top-3 left-3 bg-amber-500 text-white text-xs font-bold px-2 py-1 rounded-full">CHINESE</span>
+          </div>
+          <div class="p-4">
+            <h3 class="font-bold text-lg text-white mb-2">Hakka Noodles</h3>
+            <p class="text-slate-400 text-sm mb-4">Stir-fried noodles with vegetables</p>
+            <div class="flex items-center justify-between">
+              <span class="text-2xl font-black text-primary">₹929</span>
+              <button onclick="addToCart('Hakka Noodles', 929, 'https://images.unsplash.com/photo-1626074353765-517a681e40be?w=400&h=400&fit=crop')" class="bg-primary text-white px-4 py-2 rounded-lg font-bold hover:bg-orange-600 transition-all flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm">add_shopping_cart</span>
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- DESSERTS -->
+        <div class="food-card bg-white/10 backdrop-blur-md rounded-xl overflow-hidden border border-white/20 hover:border-primary transition-all" data-category="desserts">
+          <div class="relative h-48 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=400&h=400&fit=crop" alt="Gulab Jamun" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500"/>
+            <span class="absolute top-3 left-3 bg-primary text-white text-xs font-bold px-2 py-1 rounded-full">DESSERT</span>
+          </div>
+          <div class="p-4">
+            <h3 class="font-bold text-lg text-white mb-2">Gulab Jamun</h3>
+            <p class="text-slate-400 text-sm mb-4">Fried dumplings in saffron syrup</p>
+            <div class="flex items-center justify-between">
+              <span class="text-2xl font-black text-primary">₹679</span>
+              <button onclick="addToCart('Gulab Jamun', 679, 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=400&h=400&fit=crop')" class="bg-primary text-white px-4 py-2 rounded-lg font-bold hover:bg-orange-600 transition-all flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm">add_shopping_cart</span>
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Floating Cart Button -->
+      <div class="fixed bottom-6 right-6 z-[110]">
+        <button onclick="viewCart()" class="relative bg-primary text-white rounded-full shadow-2xl hover:scale-110 transition-transform px-6 py-4 flex items-center gap-3">
+          <span class="material-symbols-outlined text-2xl">shopping_cart</span>
+          <span class="font-bold text-lg" id="cart-count">0</span>
+          <span class="absolute -top-2 -right-2 bg-white text-primary text-xs font-black w-6 h-6 rounded-full flex items-center justify-center" id="cart-badge">0</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
     
   </body>
 </html>
