@@ -41,35 +41,30 @@
       body {
         font-family: 'Work Sans', sans-serif;
       }
-      .hero-gradient {
-        background: linear-gradient(
-          to bottom,
-          rgba(35, 20, 15, 0.4) 0%,
-          rgba(35, 20, 15, 0.8) 100%
-        );
-      }
+      /* Enhanced text visibility */
+#home h2 {
+  text-shadow: 
+    0 2px 10px rgba(0, 0, 0, 0.8),
+    0 4px 20px rgba(0, 0, 0, 0.6),
+    0 0 40px rgba(0, 0, 0, 0.4);
+}
+
+#home p {
+  text-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.9),
+    0 1px 4px rgba(0, 0, 0, 0.8);
+}
+
+#home span {
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
+}
       
       /* Kitchen background behind title */
       .kitchen-bg {
         position: relative;
       }
       
-      .kitchen-bg::before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 120%;
-        height: 120%;
-        background-image: url('https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=1200&h=800&fit=crop');
-        background-size: cover;
-        background-position: center;
-        opacity: 0.15;
-        z-index: -1;
-        filter: blur(2px);
-        border-radius: 20px;
-      }
+      
       
       /* Smooth scroll */
       html {
@@ -444,8 +439,8 @@
           <div id="gourmet-container" class="scroll-container-wrapper overflow-x-auto pb-8 no-scrollbar">
             <div class="flex gap-4 sm:gap-6">
               <!-- Food images -->
-              <div class="min-w-[120px] sm:min-w-[150px] md:min-w-[180px] group flex-shrink-0">
-                <div class="relative aspect-square rounded-xl sm:rounded-2xl overflow-hidden border border-white/10">
+              <div class="min-w-[100px] sm:min-w-[130px] md:min-w-[160px] group flex-shrink-0">
+                <div class="relative aspect-square rounded-lg sm:rounded-xl overflow-hidden border border-white/10">
                   <img
                     alt="Golden-brown Indian Samosas"
                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
@@ -2062,7 +2057,7 @@
         
         <!-- VEGETARIAN ITEMS -->
         <div class="food-card bg-white/10 backdrop-blur-md rounded-xl overflow-hidden border border-white/20 hover:border-primary transition-all" data-category="vegetarian">
-          <div class="relative h-48 overflow-hidden">
+          <div class="relative h-32 sm:h-44 md:h-48 overflow-hidden">
             <img src="https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=400&h=400&fit=crop" alt="Paneer Tikka Masala" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500"/>
             <span class="absolute top-3 left-3 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">VEG</span>
           </div>
@@ -2080,7 +2075,7 @@
         </div>
 
         <div class="food-card bg-white/10 backdrop-blur-md rounded-xl overflow-hidden border border-white/20 hover:border-primary transition-all" data-category="vegetarian">
-          <div class="relative h-48 overflow-hidden">
+          <div class="relative h-32 sm:h-44 md:h-48 overflow-hidden">
             <img src="https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=400&h=400&fit=crop" alt="Dal Makhani" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500"/>
             <span class="absolute top-3 left-3 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">VEG</span>
           </div>
@@ -2099,7 +2094,7 @@
 
         <!-- NON-VEG ITEMS -->
         <div class="food-card bg-white/10 backdrop-blur-md rounded-xl overflow-hidden border border-white/20 hover:border-primary transition-all" data-category="non-veg">
-          <div class="relative h-48 overflow-hidden">
+          <div class="relative h-32 sm:h-44 md:h-48 overflow-hidden">
             <img src="https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=400&h=400&fit=crop" alt="Butter Chicken" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500"/>
             <span class="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">NON-VEG</span>
           </div>
@@ -2117,7 +2112,7 @@
         </div>
 
         <div class="food-card bg-white/10 backdrop-blur-md rounded-xl overflow-hidden border border-white/20 hover:border-primary transition-all" data-category="non-veg">
-          <div class="relative h-48 overflow-hidden">
+          <div class="relative h-32 sm:h-44 md:h-48 overflow-hidden">
             <img src="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=400&h=400&fit=crop" alt="Chicken Biryani" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500"/>
             <span class="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">NON-VEG</span>
           </div>
@@ -2136,7 +2131,7 @@
 
         <!-- CHINESE ITEMS -->
         <div class="food-card bg-white/10 backdrop-blur-md rounded-xl overflow-hidden border border-white/20 hover:border-primary transition-all" data-category="chinese">
-          <div class="relative h-48 overflow-hidden">
+          <div class="relative h-32 sm:h-44 md:h-48 overflow-hidden">
             <img src="https://images.unsplash.com/photo-1626074353765-517a681e40be?w=400&h=400&fit=crop" alt="Hakka Noodles" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500"/>
             <span class="absolute top-3 left-3 bg-amber-500 text-white text-xs font-bold px-2 py-1 rounded-full">CHINESE</span>
           </div>
@@ -2155,7 +2150,7 @@
 
         <!-- DESSERTS -->
         <div class="food-card bg-white/10 backdrop-blur-md rounded-xl overflow-hidden border border-white/20 hover:border-primary transition-all" data-category="desserts">
-          <div class="relative h-48 overflow-hidden">
+          <div class="relative h-32 sm:h-44 md:h-48 overflow-hidden">
             <img src="https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=400&h=400&fit=crop" alt="Gulab Jamun" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500"/>
             <span class="absolute top-3 left-3 bg-primary text-white text-xs font-bold px-2 py-1 rounded-full">DESSERT</span>
           </div>
@@ -2179,6 +2174,38 @@
     </div>
   </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  // Initialize Supabase
+  const SUPABASE_URL = 'YOUR_PROJECT_URL'; // Get from Supabase dashboard
+  const SUPABASE_KEY = 'YOUR_ANON_KEY';    // Get from Supabase dashboard
+  const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  
+  // Modified checkout function
+  async function proceedToCheckout() {
+    const customerName = prompt('Enter your name:');
+    const customerPhone = prompt('Enter your phone:');
     
+    const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    
+    // Save order to Supabase
+    const { data, error } = await supabase
+      .from('orders')
+      .insert([{
+        customer_name: customerName,
+        customer_phone: customerPhone,
+        items: cart,
+        total_amount: total * 1.05 // Include GST
+      }]);
+    
+    if (error) {
+      alert('Error placing order: ' + error.message);
+    } else {
+      alert('Order placed successfully! Order ID: ' + data[0].id);
+      cart = []; // Clear cart
+      updateCartCount();
+    }
+  }
+</script>  
   </body>
 </html>
