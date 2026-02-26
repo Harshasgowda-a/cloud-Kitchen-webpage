@@ -1459,11 +1459,48 @@ function proceedToCheckout() {
 // ==================== ORDER COUNTER ====================
 let orderCounter = parseInt(localStorage.getItem('orderCounter') || '1');
 
-function generateOrderId() {
-  const orderId = `BOMCK-${String(orderCounter).padStart(4, '0')}`;
-  orderCounter++;
-  localStorage.setItem('orderCounter', orderCounter);
-  return orderId;
+async function generateOrderId() {
+  let maxNumber = 0;
+  
+  try {
+    // Get the highest order number from Supabase
+    const { data, error } = await window.supabaseClient
+      .from('orders')
+      .select('order_id')
+      .order('id', { ascending: false })
+      .limit(100);
+    
+    if (data && data.length > 0) {
+      data.forEach(order => {
+        const orderNum = parseInt(order.order_id.split('-')[1]);
+        if (orderNum > maxNumber) {
+          maxNumber = orderNum;
+        }
+      });
+      console.log('📊 Highest order number in Supabase:', maxNumber);
+    }
+  } catch (error) {
+    console.error('⚠️ Could not fetch from Supabase:', error);
+  }
+  
+  // Also check localStorage
+  const localOrders = JSON.parse(localStorage.getItem('orders') || '[]');
+  localOrders.forEach(order => {
+    const orderId = order.orderId || order.order_id;
+    if (orderId) {
+      const orderNum = parseInt(orderId.split('-')[1]);
+      if (orderNum > maxNumber) {
+        maxNumber = orderNum;
+      }
+    }
+  });
+  
+  // Generate next order ID
+  const nextNumber = maxNumber + 1;
+  const newOrderId = `BOMCK-${String(nextNumber).padStart(4, '0')}`;
+  
+  console.log('🆕 Generated new Order ID:', newOrderId);
+  return newOrderId;
 }
 
 // ==================== PROCEED TO CHECKOUT ====================
@@ -1823,8 +1860,8 @@ async function confirmAndPay() {
   const deliveryFee = 30;
   const total = subtotal + gst + deliveryFee;
   
-  // Generate Order ID
-  const orderId = generateOrderId();
+  // Generate Order ID (NOW WITH AWAIT)
+  const orderId = await generateOrderId();
   
   // Create order object for Supabase
   const orderData = {
@@ -1833,7 +1870,7 @@ async function confirmAndPay() {
     customer_phone: phone,
     customer_email: email,
     delivery_address: address,
-    items: cart, // Supabase accepts JSONB
+    items: cart,
     subtotal: parseFloat(subtotal.toFixed(2)),
     gst: parseFloat(gst.toFixed(2)),
     delivery_charge: parseFloat(deliveryFee.toFixed(2)),
@@ -1844,21 +1881,13 @@ async function confirmAndPay() {
   };
   
   console.log('📦 Order Data:', orderData);
-  console.log('🔗 Supabase Client:', typeof supabaseClient !== 'undefined' ? 'Available' : 'NOT AVAILABLE');
   
   let supabaseSuccess = false;
   
   try {
-    // Check if supabaseClient exists
-    if (typeof supabaseClient === 'undefined') {
-      console.error('❌ supabaseClient is not defined!');
-      throw new Error('Supabase client not initialized');
-    }
-    
     console.log('💾 Attempting to save to Supabase...');
     
-    // 🔥 SAVE TO SUPABASE
-    const { data, error } = await supabaseClient
+    const { data, error } = await window.supabaseClient
       .from('orders')
       .insert([orderData])
       .select();
@@ -1872,14 +1901,11 @@ async function confirmAndPay() {
     supabaseSuccess = true;
     
   } catch (error) {
-    console.error('❌ Failed to save to Supabase:', error.message);
-    console.error('Error details:', error);
+    console.error('❌ Failed to save to Supabase:', error);
   }
   
   // Always save to localStorage as backup
-  console.log('💾 Saving to localStorage...');
   saveOrderToLocalStorage(orderData);
-  console.log('✅ Saved to localStorage');
   
   // Close checkout and show success
   closeCheckoutModal();
@@ -1889,12 +1915,10 @@ async function confirmAndPay() {
   cart = [];
   updateCartCount();
   
-  // Show appropriate message
   if (supabaseSuccess) {
-    console.log('🎉 Order placed successfully in Supabase!');
+    console.log('🎉 Order placed successfully!');
   } else {
-    console.warn('⚠️ Order saved to localStorage only (Supabase failed)');
-    showNotification('Order placed! Reference: ' + orderId);
+    console.warn('⚠️ Order saved locally only');
   }
 }
 
@@ -2806,7 +2830,7 @@ function updateOrderStatus(status) {
   const { createClient } = supabase;
   const SUPABASE_URL = 'https://whrinvxawdchqxnpnive.supabase.co';
   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indocmludnhhd2RjaHF4bnBuaXZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MzM4NDgsImV4cCI6MjA4NzUwOTg0OH0.KQ308OBjdKsDQw4mve2MLSDuP94yrXj1pDfhgLdlRWk';
-  const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
+  window.supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
   
   console.log('✅ Supabase connected!');
   // ==================== LOAD MENU FROM SUPABASE ====================
