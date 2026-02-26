@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | Bombay Cloud Kitchen</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#ff4400',
+          },
+          fontFamily: {
+            display: ['Work Sans', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+  
+  <style>
+    body {
+      font-family: 'Work Sans', sans-serif;
+      background: linear-gradient(135deg, #23140f 0%, #1a0f0b 100%);
+      zoom: 0.85; /* Reduced zoom to 85% */
+    }
+    
+    .status-badge {
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.8; }
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 bg-zinc-900/80 backdrop-blur-md border-b border-primary/20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        
+        <!-- Logo -->
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+            <span class="material-symbols-outlined text-white text-2xl">admin_panel_settings</span>
+          </div>
+          <div>
+            <h1 class="text-xl font-black text-white">Admin Dashboard</h1>
+            <p class="text-xs text-slate-400">Bombay Cloud Kitchen</p>
+          </div>
+        </div>
+
+        <!-- User Info & Logout -->
+        <div class="flex items-center gap-4">
+          <div class="hidden sm:block text-right">
+            <p class="text-sm font-bold text-white" id="admin-name">Admin User</p>
+            <p class="text-xs text-slate-400">Last login: <span id="login-time">--</span></p>
+          </div>
+          <button onclick="logout()" class="bg-red-500/10 text-red-400 border border-red-500/30 px-4 py-2 rounded-lg font-bold text-sm hover:bg-red-500/20 transition-all flex items-center gap-2">
+            <span class="material-symbols-outlined text-lg">logout</span>
+            <span class="hidden sm:inline">Logout</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-24">
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      
+      <!-- Total Orders -->
+      <div class="bg-gradient-to-br from-blue-500/10 to-blue-600/10 border border-blue-500/30 rounded-xl p-5 hover:scale-105 transition-transform">
+        <div class="flex items-center justify-between mb-3">
+          <div class="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+            <span class="material-symbols-outlined text-blue-400 text-xl">receipt_long</span>
+          </div>
+          <span class="text-[10px] font-bold text-blue-400 bg-blue-500/20 px-2 py-1 rounded-full">ALL TIME</span>
+        </div>
+        <h3 class="text-3xl font-black text-white mb-1" id="total-orders">0</h3>
+        <p class="text-xs text-slate-400">Total Orders</p>
+      </div>
+
+      <!-- Pending Orders -->
+      <div class="bg-gradient-to-br from-orange-500/10 to-orange-600/10 border border-orange-500/30 rounded-xl p-5 hover:scale-105 transition-transform">
+        <div class="flex items-center justify-between mb-3">
+          <div class="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
+            <span class="material-symbols-outlined text-orange-400 text-xl">pending</span>
+          </div>
+          <span class="text-[10px] font-bold text-orange-400 bg-orange-500/20 px-2 py-1 rounded-full">ACTIVE</span>
+        </div>
+        <h3 class="text-3xl font-black text-white mb-1" id="pending-orders">0</h3>
+        <p class="text-xs text-slate-400">Pending Orders</p>
+      </div>
+
+      <!-- Delivered -->
+      <div class="bg-gradient-to-br from-green-500/10 to-green-600/10 border border-green-500/30 rounded-xl p-5 hover:scale-105 transition-transform">
+        <div class="flex items-center justify-between mb-3">
+          <div class="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+            <span class="material-symbols-outlined text-green-400 text-xl">check_circle</span>
+          </div>
+          <span class="text-[10px] font-bold text-green-400 bg-green-500/20 px-2 py-1 rounded-full">COMPLETED</span>
+        </div>
+        <h3 class="text-3xl font-black text-white mb-1" id="delivered-orders">0</h3>
+        <p class="text-xs text-slate-400">Delivered</p>
+      </div>
+
+      <!-- Revenue -->
+      <div class="bg-gradient-to-br from-primary/10 to-primary/20 border border-primary/30 rounded-xl p-5 hover:scale-105 transition-transform">
+        <div class="flex items-center justify-between mb-3">
+          <div class="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center">
+            <span class="material-symbols-outlined text-primary text-xl">payments</span>
+          </div>
+          <span class="text-[10px] font-bold text-primary bg-primary/20 px-2 py-1 rounded-full">ALL TIME</span>
+        </div>
+        <h3 class="text-3xl font-black text-white mb-1" id="total-revenue">₹0</h3>
+        <p class="text-xs text-slate-400">Total Revenue</p>
+      </div>
+
+    </div>
+
+    <!-- Filters & Search -->
+    <div class="bg-zinc-900/50 backdrop-blur-sm border border-white/10 rounded-xl p-4 mb-6">
+      <div class="flex flex-col sm:flex-row gap-3">
+        
+        <!-- Search -->
+        <div class="flex-1">
+          <div class="relative">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+            <input 
+              type="text" 
+              id="search-input"
+              placeholder="Search by Order ID, Customer Name, or Phone..."
+              class="w-full pl-10 pr-4 py-2.5 bg-zinc-800 border border-slate-700 rounded-lg text-white text-sm placeholder-slate-500 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+              oninput="filterOrders()"
+            />
+          </div>
+        </div>
+
+        <!-- Status Filter -->
+        <select 
+          id="status-filter" 
+          onchange="filterOrders()"
+          class="px-4 py-2.5 bg-zinc-800 border border-slate-700 rounded-lg text-white text-sm focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all cursor-pointer"
+        >
+          <option value="all">All Orders</option>
+          <option value="Order Placed">Order Placed</option>
+          <option value="Preparing">Preparing</option>
+          <option value="Out for Delivery">Out for Delivery</option>
+          <option value="Delivered">Delivered</option>
+        </select>
+
+        <!-- Refresh Button -->
+        <button 
+          onclick="loadOrders()" 
+          class="bg-primary text-white px-5 py-2.5 rounded-lg font-bold text-sm hover:bg-orange-600 transition-all flex items-center gap-2"
+        >
+          <span class="material-symbols-outlined text-lg">refresh</span>
+          <span class="hidden sm:inline">Refresh</span>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- Orders Table -->
+    <div class="bg-zinc-900/50 backdrop-blur-sm border border-white/10 rounded-xl overflow-hidden">
+      
+      <!-- Table Header -->
+      <div class="bg-zinc-800/50 px-5 py-3 border-b border-white/10">
+        <h2 class="text-lg font-black text-white flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-xl">list_alt</span>
+          Recent Orders
+        </h2>
+      </div>
+
+      <!-- Table Container -->
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead class="bg-zinc-800/30">
+            <tr class="text-left">
+              <th class="px-5 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Order ID</th>
+              <th class="px-5 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Customer</th>
+              <th class="px-5 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Items</th>
+              <th class="px-5 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total</th>
+              <th class="px-5 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Status</th>
+              <th class="px-5 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Date</th>
+              <th class="px-5 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="orders-tbody" class="divide-y divide-white/5">
+            <!-- Orders will be loaded here -->
+            <tr>
+              <td colspan="7" class="px-5 py-10 text-center">
+                <div class="flex flex-col items-center justify-center gap-3">
+                  <div class="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                  <p class="text-slate-400 text-xs">Loading orders...</p>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="fixed bottom-0 left-0 right-0 bg-zinc-950/90 backdrop-blur-md border-t border-white/10 py-3 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-2">
+        <p class="text-slate-500 text-xs">© 2024 Bombay Cloud Kitchen. All rights reserved.</p>
+        <div class="flex items-center gap-4 text-xs">
+          <a href="index.html" class="text-slate-400 hover:text-primary transition-colors">Home</a>
+          <a href="#" class="text-slate-400 hover:text-primary transition-colors">Privacy Policy</a>
+          <a href="#" class="text-slate-400 hover:text-primary transition-colors">Terms</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Order Details Modal -->
+  <div id="order-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 hidden overflow-y-auto">
+    <div class="min-h-screen px-4 py-8 flex items-center justify-center">
+      <div class="bg-zinc-900 border border-white/10 rounded-2xl max-w-2xl w-full shadow-2xl">
+        
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between p-5 border-b border-white/10">
+          <h3 class="text-xl font-black text-white" id="modal-order-id">Order Details</h3>
+          <button onclick="closeModal()" class="text-slate-400 hover:text-white transition-colors">
+            <span class="material-symbols-outlined text-2xl">close</span>
+          </button>
+        </div>
+
+        <!-- Modal Content -->
+        <div class="p-5 space-y-4">
+          
+          <!-- Customer Info -->
+          <div class="bg-zinc-800/50 rounded-lg p-4">
+            <h4 class="text-xs font-bold text-slate-400 uppercase mb-3">Customer Information</h4>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <p class="text-[10px] text-slate-500 mb-1">Name</p>
+                <p class="text-white text-sm font-bold" id="modal-customer-name">--</p>
+              </div>
+              <div>
+                <p class="text-[10px] text-slate-500 mb-1">Phone</p>
+                <p class="text-white text-sm font-bold" id="modal-customer-phone">--</p>
+              </div>
+              <div class="col-span-2">
+                <p class="text-[10px] text-slate-500 mb-1">Email</p>
+                <p class="text-white text-sm font-bold" id="modal-customer-email">--</p>
+              </div>
+              <div class="col-span-2">
+                <p class="text-[10px] text-slate-500 mb-1">Delivery Address</p>
+                <p class="text-white text-sm" id="modal-delivery-address">--</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Order Items -->
+          <div class="bg-zinc-800/50 rounded-lg p-4">
+            <h4 class="text-xs font-bold text-slate-400 uppercase mb-3">Order Items</h4>
+            <div id="modal-items" class="space-y-2">
+              <!-- Items will be inserted here -->
+            </div>
+          </div>
+
+          <!-- Payment Details -->
+          <div class="bg-zinc-800/50 rounded-lg p-4">
+            <h4 class="text-xs font-bold text-slate-400 uppercase mb-3">Payment Details</h4>
+            <div class="space-y-2">
+              <div class="flex justify-between text-sm">
+                <span class="text-slate-400">Subtotal</span>
+                <span class="text-white font-bold" id="modal-subtotal">₹0</span>
+              </div>
+              <div class="flex justify-between text-sm">
+                <span class="text-slate-400">GST (5%)</span>
+                <span class="text-white font-bold" id="modal-gst">₹0</span>
+              </div>
+              <div class="flex justify-between text-sm">
+                <span class="text-slate-400">Delivery Charge</span>
+                <span class="text-white font-bold" id="modal-delivery">₹0</span>
+              </div>
+              <div class="flex justify-between text-base pt-2 border-t border-white/10">
+                <span class="text-white font-black">Total</span>
+                <span class="text-primary font-black text-xl" id="modal-total">₹0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Update Status -->
+          <div class="bg-primary/10 border border-primary/30 rounded-lg p-4">
+            <h4 class="text-xs font-bold text-primary uppercase mb-3">Update Order Status</h4>
+            <div class="flex gap-3">
+              <select 
+                id="modal-status-select" 
+                class="flex-1 px-4 py-2.5 bg-zinc-800 border border-slate-700 rounded-lg text-white text-sm focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none"
+              >
+                <option value="Order Placed">Order Placed</option>
+                <option value="Preparing">Preparing</option>
+                <option value="Out for Delivery">Out for Delivery</option>
+                <option value="Delivered">Delivered</option>
+              </select>
+              <button 
+                onclick="updateOrderStatus()" 
+                class="bg-primary text-white px-5 py-2.5 rounded-lg font-bold text-sm hover:bg-orange-600 transition-all flex items-center gap-2"
+              >
+                <span class="material-symbols-outlined text-lg">save</span>
+                Update
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Supabase Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    // Initialize Supabase
+    const { createClient } = supabase;
+    const SUPABASE_URL = 'https://whrinvxawdchqxnpnive.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indocmludnhhd2RjaHF4bnBuaXZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MzM4NDgsImV4cCI6MjA4NzUwOTg0OH0.KQ308OBjdKsDQw4mve2MLSDuP94yrXj1pDfhgLdlRWk';
+    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    let allOrders = [];
+    let currentOrderId = null;
+
+    // Check authentication
+    function checkAuth() {
+      const isLoggedIn = sessionStorage.getItem('adminLoggedIn');
+      const adminId = sessionStorage.getItem('adminId');
+      const loginTime = sessionStorage.getItem('loginTime');
+
+      if (isLoggedIn !== 'true') {
+        window.location.href = 'admin-login.html';
+        return;
+      }
+
+      // Display admin info
+      document.getElementById('admin-name').textContent = adminId;
+      if (loginTime) {
+        const time = new Date(loginTime).toLocaleTimeString('en-US', { 
+          hour: '2-digit', 
+          minute: '2-digit' 
+        });
+        document.getElementById('login-time').textContent = time;
+      }
+    }
+
+    // Logout
+    function logout() {
+      sessionStorage.clear();
+      window.location.href = 'admin-login.html';
+    }
+
+    // Load Orders from Supabase
+    async function loadOrders() {
+      try {
+        const { data, error } = await supabaseClient
+          .from('orders')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        allOrders = data || [];
+        
+        // Also load from localStorage as backup
+        const localOrders = JSON.parse(localStorage.getItem('orders') || '[]');
+        
+        // Merge orders (remove duplicates)
+        const orderMap = new Map();
+        [...allOrders, ...localOrders].forEach(order => {
+          const id = order.order_id || order.orderId;
+          if (id && !orderMap.has(id)) {
+            orderMap.set(id, order);
+          }
+        });
+        
+        allOrders = Array.from(orderMap.values());
+        
+        displayOrders(allOrders);
+        updateStats(allOrders);
+
+      } catch (error) {
+        console.error('Error loading orders:', error);
+        
+        // Fallback to localStorage
+        const localOrders = JSON.parse(localStorage.getItem('orders') || '[]');
+        allOrders = localOrders;
+        displayOrders(allOrders);
+        updateStats(allOrders);
+      }
+    }
+
+    // Display Orders in Table
+    function displayOrders(orders) {
+      const tbody = document.getElementById('orders-tbody');
+      
+      if (orders.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="px-5 py-10 text-center text-slate-400">
+              <span class="material-symbols-outlined text-5xl mb-3 opacity-50">inbox</span>
+              <p class="text-sm">No orders found</p>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = orders.map(order => {
+        const orderId = order.order_id || order.orderId;
+        const customerName = order.customer_name || order.customerName;
+        const customerPhone = order.customer_phone || order.customerPhone;
+        const total = order.total || 0;
+        const status = order.status || 'Order Placed';
+        const date = new Date(order.created_at || order.orderDate || Date.now());
+        const itemCount = order.items?.length || 0;
+
+        const statusColors = {
+          'Order Placed': 'bg-blue-500/20 text-blue-400 border-blue-500/30',
+          'Preparing': 'bg-orange-500/20 text-orange-400 border-orange-500/30',
+          'Out for Delivery': 'bg-purple-500/20 text-purple-400 border-purple-500/30',
+          'Delivered': 'bg-green-500/20 text-green-400 border-green-500/30'
+        };
+
+        return `
+          <tr class="hover:bg-white/5 transition-colors">
+            <td class="px-5 py-3">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-sm">tag</span>
+                <span class="font-bold text-white text-sm">${orderId}</span>
+              </div>
+            </td>
+            <td class="px-5 py-3">
+              <div>
+                <p class="font-bold text-white text-sm">${customerName}</p>
+                <p class="text-[10px] text-slate-400">${customerPhone}</p>
+              </div>
+            </td>
+            <td class="px-5 py-3">
+              <span class="text-slate-300 text-sm">${itemCount} item${itemCount !== 1 ? 's' : ''}</span>
+            </td>
+            <td class="px-5 py-3">
+              <span class="font-black text-primary text-sm">₹${parseFloat(total).toFixed(2)}</span>
+            </td>
+            <td class="px-5 py-3">
+              <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-bold border ${statusColors[status] || 'bg-slate-500/20 text-slate-400'} status-badge">
+                <span class="w-1.5 h-1.5 rounded-full bg-current"></span>
+                ${status}
+              </span>
+            </td>
+            <td class="px-5 py-3">
+              <div>
+                <p class="text-xs text-white">${date.toLocaleDateString('en-IN')}</p>
+                <p class="text-[10px] text-slate-400">${date.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}</p>
+              </div>
+            </td>
+            <td class="px-5 py-3 text-center">
+              <button 
+                onclick="openOrderDetails('${orderId}')" 
+                class="inline-flex items-center gap-1 bg-primary/10 text-primary px-3 py-1.5 rounded-lg font-bold text-xs hover:bg-primary/20 transition-all"
+              >
+                <span class="material-symbols-outlined text-sm">visibility</span>
+                <span class="hidden lg:inline">View</span>
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Update Stats - ALL TIME (not just today)
+    function updateStats(orders) {
+      const totalOrders = orders.length;
+
+      const pending = orders.filter(o => 
+        o.status && o.status !== 'Delivered'
+      ).length;
+
+      const delivered = orders.filter(o => 
+        o.status === 'Delivered'
+      ).length;
+
+      // Total revenue from ALL orders
+      const revenue = orders.reduce((sum, o) => sum + (parseFloat(o.total) || 0), 0);
+
+      document.getElementById('total-orders').textContent = totalOrders;
+      document.getElementById('pending-orders').textContent = pending;
+      document.getElementById('delivered-orders').textContent = delivered;
+      document.getElementById('total-revenue').textContent = `₹${revenue.toFixed(2)}`;
+    }
+
+    // Filter Orders
+    function filterOrders() {
+      const searchTerm = document.getElementById('search-input').value.toLowerCase();
+      const statusFilter = document.getElementById('status-filter').value;
+
+      let filtered = allOrders;
+
+      // Filter by search term
+      if (searchTerm) {
+        filtered = filtered.filter(order => {
+          const orderId = (order.order_id || order.orderId || '').toLowerCase();
+          const customerName = (order.customer_name || order.customerName || '').toLowerCase();
+          const customerPhone = (order.customer_phone || order.customerPhone || '');
+          
+          return orderId.includes(searchTerm) || 
+                 customerName.includes(searchTerm) || 
+                 customerPhone.includes(searchTerm);
+        });
+      }
+
+      // Filter by status
+      if (statusFilter !== 'all') {
+        filtered = filtered.filter(order => order.status === statusFilter);
+      }
+
+      displayOrders(filtered);
+    }
+
+    // Open Order Details Modal
+    function openOrderDetails(orderId) {
+      const order = allOrders.find(o => (o.order_id || o.orderId) === orderId);
+      if (!order) return;
+
+      currentOrderId = orderId;
+
+      // Populate modal
+      document.getElementById('modal-order-id').textContent = `Order ${orderId}`;
+      document.getElementById('modal-customer-name').textContent = order.customer_name || order.customerName || '--';
+      document.getElementById('modal-customer-phone').textContent = order.customer_phone || order.customerPhone || '--';
+      document.getElementById('modal-customer-email').textContent = order.customer_email || order.customerEmail || '--';
+      document.getElementById('modal-delivery-address').textContent = order.delivery_address || order.deliveryAddress || '--';
+
+      // Populate items
+      const items = order.items || [];
+      const itemsHTML = items.map(item => `
+        <div class="flex items-center justify-between bg-zinc-900 rounded-lg p-3">
+          <div class="flex items-center gap-3">
+            <img src="${item.image}" alt="${item.name}" class="w-10 h-10 rounded object-cover"/>
+            <div>
+              <p class="font-bold text-white text-sm">${item.name}</p>
+              <p class="text-[10px] text-slate-400">Qty: ${item.quantity}</p>
+            </div>
+          </div>
+          <span class="font-bold text-white text-sm">₹${(item.price * item.quantity).toFixed(2)}</span>
+        </div>
+      `).join('');
+      document.getElementById('modal-items').innerHTML = itemsHTML;
+
+      // Populate pricing
+      document.getElementById('modal-subtotal').textContent = `₹${parseFloat(order.subtotal || 0).toFixed(2)}`;
+      document.getElementById('modal-gst').textContent = `₹${parseFloat(order.gst || 0).toFixed(2)}`;
+      document.getElementById('modal-delivery').textContent = `₹${parseFloat(order.delivery_charge || 0).toFixed(2)}`;
+      document.getElementById('modal-total').textContent = `₹${parseFloat(order.total || 0).toFixed(2)}`;
+
+      // Set current status
+      document.getElementById('modal-status-select').value = order.status || 'Order Placed';
+
+      // Show modal
+      document.getElementById('order-modal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    // Close Modal
+    function closeModal() {
+      document.getElementById('order-modal').classList.add('hidden');
+      document.body.style.overflow = 'auto';
+    }
+
+    // Update Order Status
+    async function updateOrderStatus() {
+      const newStatus = document.getElementById('modal-status-select').value;
+      
+      if (!currentOrderId) return;
+
+      try {
+        // Update in Supabase
+        const { error } = await supabaseClient
+          .from('orders')
+          .update({ 
+            status: newStatus,
+            updated_at: new Date().toISOString()
+          })
+          .eq('order_id', currentOrderId);
+
+        if (error) throw error;
+
+        // Update in localStorage as backup
+        const localOrders = JSON.parse(localStorage.getItem('orders') || '[]');
+        const orderIndex = localOrders.findIndex(o => 
+          (o.order_id || o.orderId) === currentOrderId
+        );
+        
+        if (orderIndex !== -1) {
+          localOrders[orderIndex].status = newStatus;
+          localStorage.setItem('orders', JSON.stringify(localOrders));
+        }
+
+        // Show success message
+        alert(`✅ Order status updated to "${newStatus}"`);
+        
+        // Reload orders
+        closeModal();
+        loadOrders();
+
+      } catch (error) {
+        console.error('Error updating status:', error);
+        alert('❌ Failed to update status. Please try again.');
+      }
+    }
+
+    // Initialize on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      checkAuth();
+      loadOrders();
+      
+      // Auto-refresh every 30 seconds
+      setInterval(loadOrders, 30000);
+    });
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+  </script>
+
+</body>
+</html>
