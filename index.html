@@ -1829,52 +1829,72 @@ async function confirmAndPay() {
   // Create order object for Supabase
   const orderData = {
     order_id: orderId,
-    order_date: new Date().toISOString(),
     customer_name: name,
     customer_phone: phone,
     customer_email: email,
     delivery_address: address,
     items: cart, // Supabase accepts JSONB
-    subtotal: subtotal,
-    gst: gst,
-    delivery_charge: deliveryFee,
-    total: total,
+    subtotal: parseFloat(subtotal.toFixed(2)),
+    gst: parseFloat(gst.toFixed(2)),
+    delivery_charge: parseFloat(deliveryFee.toFixed(2)),
+    total: parseFloat(total.toFixed(2)),
     payment_method: paymentMethod,
-    status: 'Order Placed'
+    status: 'Order Placed',
+    created_at: new Date().toISOString()
   };
   
+  console.log('📦 Order Data:', orderData);
+  console.log('🔗 Supabase Client:', typeof supabaseClient !== 'undefined' ? 'Available' : 'NOT AVAILABLE');
+  
+  let supabaseSuccess = false;
+  
   try {
+    // Check if supabaseClient exists
+    if (typeof supabaseClient === 'undefined') {
+      console.error('❌ supabaseClient is not defined!');
+      throw new Error('Supabase client not initialized');
+    }
+    
+    console.log('💾 Attempting to save to Supabase...');
+    
     // 🔥 SAVE TO SUPABASE
     const { data, error } = await supabaseClient
       .from('orders')
       .insert([orderData])
       .select();
     
-    if (error) throw error;
+    if (error) {
+      console.error('❌ Supabase error:', error);
+      throw error;
+    }
     
     console.log('✅ Order saved to Supabase:', data);
-    
-    // Also save to localStorage as backup
-    saveOrderToLocalStorage(orderData);
-    
-    // Close checkout and show success
-    closeCheckoutModal();
-    showSuccessModal(orderId);
-    
-    // Clear cart
-    cart = [];
-    updateCartCount();
+    supabaseSuccess = true;
     
   } catch (error) {
-    console.error('❌ Supabase error:', error);
-    showNotification('Order placed! (Saved locally)');
-    
-    // Fallback to localStorage
-    saveOrderToLocalStorage(orderData);
-    closeCheckoutModal();
-    showSuccessModal(orderId);
-    cart = [];
-    updateCartCount();
+    console.error('❌ Failed to save to Supabase:', error.message);
+    console.error('Error details:', error);
+  }
+  
+  // Always save to localStorage as backup
+  console.log('💾 Saving to localStorage...');
+  saveOrderToLocalStorage(orderData);
+  console.log('✅ Saved to localStorage');
+  
+  // Close checkout and show success
+  closeCheckoutModal();
+  showSuccessModal(orderId);
+  
+  // Clear cart
+  cart = [];
+  updateCartCount();
+  
+  // Show appropriate message
+  if (supabaseSuccess) {
+    console.log('🎉 Order placed successfully in Supabase!');
+  } else {
+    console.warn('⚠️ Order saved to localStorage only (Supabase failed)');
+    showNotification('Order placed! Reference: ' + orderId);
   }
 }
 
