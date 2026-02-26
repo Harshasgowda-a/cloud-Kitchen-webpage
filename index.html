@@ -2806,7 +2806,7 @@ function updateOrderStatus(status) {
   const { createClient } = supabase;
   const SUPABASE_URL = 'https://whrinvxawdchqxnpnive.supabase.co';
   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indocmludnhhd2RjaHF4bnBuaXZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MzM4NDgsImV4cCI6MjA4NzUwOTg0OH0.KQ308OBjdKsDQw4mve2MLSDuP94yrXj1pDfhgLdlRWk';
-  const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
+  window.supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
   
   console.log('✅ Supabase connected!');
   // ==================== LOAD MENU FROM SUPABASE ====================
